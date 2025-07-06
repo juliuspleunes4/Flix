@@ -1,13 +1,22 @@
 const API_BASE_URL = 'http://localhost:3000';
 
 export interface Movie {
-  id: number;
+  id: string; // Changed from number to string to support both local_1 and gdrive_1 formats
   title: string;
-  filename: string;
+  filename?: string; // Optional for Google Drive movies
   url: string;
+  source: 'local' | 'gdrive'; // New field to identify source
   size?: number;
   modified?: string;
   thumbnail?: string;
+  // New fields for enhanced movie information
+  description?: string;
+  year?: number;
+  genre?: string[];
+  duration?: string;
+  rating?: string;
+  quality?: string;
+  stars?: number; // Star rating (0-5)
 }
 
 class ApiClient {
@@ -41,7 +50,7 @@ class ApiClient {
     return this.request<Movie[]>('/api/movies');
   }
 
-  async getMovie(id: number): Promise<Movie> {
+  async getMovie(id: string): Promise<Movie> { // Changed from number to string
     return this.request<Movie>(`/api/movies/${id}`);
   }
 

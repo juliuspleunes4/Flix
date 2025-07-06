@@ -236,10 +236,40 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery }) => {
                       position: 'relative',
                       overflow: 'hidden'
                     }}>
-                      <div className="text-4xl text-gray-600" style={{
-                        fontSize: '2.5rem',
-                        color: '#6B7280'
-                      }}>🎬</div>
+                      {movie.thumbnail ? (
+                        <>
+                          <img
+                            src={movie.thumbnail}
+                            alt={movie.title}
+                            className="w-full h-full object-cover transition-opacity duration-300"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                            onLoad={(e) => {
+                              // Hide the placeholder when image loads
+                              const placeholder = (e.target as HTMLImageElement).parentElement?.querySelector('.movie-placeholder') as HTMLElement;
+                              if (placeholder) placeholder.style.display = 'none';
+                            }}
+                            onError={(e) => {
+                              // Show placeholder on error
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              const placeholder = (e.target as HTMLImageElement).parentElement?.querySelector('.movie-placeholder') as HTMLElement;
+                              if (placeholder) placeholder.style.display = 'flex';
+                            }}
+                          />
+                          <div className="movie-placeholder absolute inset-0 flex items-center justify-center text-4xl text-gray-600" style={{
+                            fontSize: '2.5rem',
+                            color: '#6B7280'
+                          }}>🎬</div>
+                        </>
+                      ) : (
+                        <div className="text-4xl text-gray-600" style={{
+                          fontSize: '2.5rem',
+                          color: '#6B7280'
+                        }}>🎬</div>
+                      )}
                       
                       {/* Hover Overlay */}
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 transition-all duration-300 flex items-center justify-center" style={{
@@ -318,7 +348,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery }) => {
                         )}
                         <div className="flex items-center space-x-1" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           <span style={{ color: '#FBBF24' }}>★</span>
-                          <span>{(Math.random() * 2 + 3).toFixed(1)}</span>
+                          <span>{(movie.stars || 3.5).toFixed(1)}</span>
                         </div>
                       </div>
                     </div>
