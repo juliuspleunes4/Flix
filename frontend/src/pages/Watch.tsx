@@ -244,7 +244,7 @@ const Watch: React.FC = () => {
             <div>
               {currentMovie.year && (
                 <div className="flex items-center text-white text-lg" style={{ marginBottom: '12px' }}>
-                  <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                   </svg>
                   {currentMovie.year}
@@ -252,7 +252,7 @@ const Watch: React.FC = () => {
               )}
               {currentMovie.rating && currentMovie.rating !== 'Not Rated' && (
                 <div className="flex items-center text-gray-300 text-lg" style={{ marginBottom: '12px' }}>
-                  <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   {currentMovie.rating}
@@ -260,7 +260,7 @@ const Watch: React.FC = () => {
               )}
               {currentMovie.duration && currentMovie.duration !== 'Unknown' && (
                 <div className="flex items-center text-gray-300 text-lg" style={{ marginBottom: '12px' }}>
-                  <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
                   {currentMovie.duration}
@@ -268,7 +268,7 @@ const Watch: React.FC = () => {
               )}
               {currentMovie.quality && currentMovie.quality !== 'Unknown' && (
                 <div className="flex items-center text-gray-300 text-lg" style={{ marginBottom: '12px' }}>
-                  <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
                   </svg>
                   {currentMovie.quality}
@@ -279,29 +279,26 @@ const Watch: React.FC = () => {
             {/* Technical Details - Simple List */}
             <div className="text-gray-300">
               <div className="flex items-center" style={{ marginBottom: '10px' }}>
-                <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                 </svg>
-                <span className="text-gray-400">Source: </span>
                 <span>{currentMovie.source === 'gdrive' ? 'Google Drive' : 'Local'}</span>
               </div>
               
               {currentMovie.size && (
                 <div className="flex items-center" style={{ marginBottom: '10px' }}>
-                  <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-gray-400">Size: </span>
                   <span>{formatFileSize(currentMovie.size)}</span>
                 </div>
               )}
               
               {currentMovie.modified && (
                 <div className="flex items-center" style={{ marginBottom: '60px' }}>
-                  <svg style={{ width: '24px', height: '24px' }} className="mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg style={{ width: '24px', height: '24px', marginRight: '16px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-gray-400">Added: </span>
                   <span>
                     {new Date(currentMovie.modified).toLocaleDateString('en-US', {
                       month: 'short',
