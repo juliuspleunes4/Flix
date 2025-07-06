@@ -64,24 +64,38 @@ app.get('/api/movies', requireAuth, (req, res) => {
   const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
   
   try {
+    if (!fs.existsSync(moviesDir)) {
+      console.log('Movies directory does not exist, creating it...');
+      fs.mkdirSync(moviesDir, { recursive: true });
+      return res.json([]);
+    }
+
     const files = fs.readdirSync(moviesDir);
+    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
     const movies = files
-      .filter(file => file.endsWith('.mp4') || file.endsWith('.mkv') || file.endsWith('.avi'))
+      .filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return supportedFormats.includes(ext);
+      })
       .map((file, index) => {
         const name = path.parse(file).name;
+        const stats = fs.statSync(path.join(moviesDir, file));
         return {
           id: index + 1,
           title: name.replace(/[._-]/g, ' ').trim(),
           filename: file,
           url: `/movies/${encodeURIComponent(file)}`,
+          size: stats.size,
+          modified: stats.mtime.toISOString(),
           thumbnail: `/api/thumbnail/${index + 1}` // Placeholder for future thumbnail support
         };
       });
     
+    console.log(`Found ${movies.length} movies in ${moviesDir}`);
     res.json(movies);
   } catch (error) {
     console.error('Error reading movies directory:', error);
-    res.status(500).json({ error: 'Unable to read movies directory' });
+    res.status(500).json({ error: 'Unable to read movies directory', details: error.message });
   }
 });
 
@@ -91,18 +105,29 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
   const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
   
   try {
+    if (!fs.existsSync(moviesDir)) {
+      return res.status(404).json({ error: 'Movies directory not found' });
+    }
+
     const files = fs.readdirSync(moviesDir);
-    const videoFiles = files.filter(file => 
-      file.endsWith('.mp4') || file.endsWith('.mkv') || file.endsWith('.avi')
-    );
+    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+    const videoFiles = files.filter(file => {
+      const ext = path.extname(file).toLowerCase();
+      return supportedFormats.includes(ext);
+    });
     
     if (movieId > 0 && movieId <= videoFiles.length) {
       const file = videoFiles[movieId - 1];
+      const filePath = path.join(moviesDir, file);
+      const stats = fs.statSync(filePath);
+      
       const movie = {
         id: movieId,
         title: path.parse(file).name.replace(/[._-]/g, ' ').trim(),
         filename: file,
-        url: `/movies/${encodeURIComponent(file)}`
+        url: `/movies/${encodeURIComponent(file)}`,
+        size: stats.size,
+        modified: stats.mtime.toISOString()
       };
       res.json(movie);
     } else {
@@ -110,7 +135,7 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
     }
   } catch (error) {
     console.error('Error reading movies directory:', error);
-    res.status(500).json({ error: 'Unable to read movies directory' });
+    res.status(500).json({ error: 'Unable to read movies directory', details: error.message });
   }
 });
 
@@ -119,9 +144,57 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
+
+// Server stats endpoint
+app.get('/api/stats', requireAuth, (req, res) => {
+  const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
+  
+  try {
+    let movieCount = 0;
+    let totalSize = 0;
+    
+    if (fs.existsSync(moviesDir)) {
+      const files = fs.readdirSync(moviesDir);
+      const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+      
+      files.forEach(file => {
+        const ext = path.extname(file).toLowerCase();
+        if (supportedFormats.includes(ext)) {
+          movieCount++;
+          const stats = fs.statSync(path.join(moviesDir, file));
+          totalSize += stats.size;
+        }
+      });
+    }
+    
+    res.json({
+      movieCount,
+      totalSize,
+      totalSizeFormatted: formatBytes(totalSize),
+      moviesDir,
+      serverUptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error getting server stats:', error);
+    res.status(500).json({ error: 'Unable to get server stats' });
+  }
+});
+
+// Helper function to format bytes
+function formatBytes(bytes, decimals = 2) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -136,5 +209,25 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`🎬 Flix Backend running on http://localhost:${PORT}`);
-  console.log(`Movies directory: ${path.join(__dirname, process.env.MOVIES_DIR || './public/movies')}`);
+  console.log(`📁 Movies directory: ${path.join(__dirname, process.env.MOVIES_DIR || './public/movies')}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔒 CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+  
+  // Check if movies directory exists
+  const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
+  if (!fs.existsSync(moviesDir)) {
+    console.log(`⚠️  Movies directory doesn't exist, will create on first API call`);
+  } else {
+    try {
+      const files = fs.readdirSync(moviesDir);
+      const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+      const movieCount = files.filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return supportedFormats.includes(ext);
+      }).length;
+      console.log(`🎥 Found ${movieCount} movies in directory`);
+    } catch (error) {
+      console.log(`⚠️  Could not read movies directory: ${error.message}`);
+    }
+  }
 });
