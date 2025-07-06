@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// Static files for movies
+// Static files for movies (keep for thumbnail generation)
 app.use('/movies', express.static(path.join(__dirname, 'public/movies')));
 
 // Authentication middleware
@@ -29,6 +29,100 @@ const requireAuth = (req, res, next) => {
     res.status(401).json({ error: 'Unauthorized' });
   }
 };
+
+// Helper function to get proper MIME type for video files
+function getVideoMimeType(extension) {
+  const mimeTypes = {
+    '.mp4': 'video/mp4',
+    '.mkv': 'video/x-matroska',
+    '.avi': 'video/x-msvideo',
+    '.mov': 'video/quicktime',
+    '.wmv': 'video/x-ms-wmv',
+    '.webm': 'video/webm'
+  };
+  return mimeTypes[extension] || 'video/mp4';
+}
+
+// Video streaming endpoint with range request support
+app.get('/api/stream/:id', requireAuth, (req, res) => {
+  const movieId = req.params.id;
+  const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
+  
+  console.log(`🎬 Streaming request for movie ID: ${movieId}`);
+  
+  try {
+    // Only handle local movies for streaming (Google Drive uses iframe)
+    if (!movieId.startsWith('local_')) {
+      return res.status(400).json({ error: 'Streaming only available for local movies' });
+    }
+    
+    const localIndex = parseInt(movieId.replace('local_', '')) - 1;
+    
+    if (!fs.existsSync(moviesDir)) {
+      return res.status(404).json({ error: 'Movies directory not found' });
+    }
+
+    const files = fs.readdirSync(moviesDir);
+    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+    const videoFiles = files.filter(file => {
+      const ext = path.extname(file).toLowerCase();
+      return supportedFormats.includes(ext);
+    });
+    
+    if (localIndex < 0 || localIndex >= videoFiles.length) {
+      return res.status(404).json({ error: 'Movie not found' });
+    }
+    
+    const file = videoFiles[localIndex];
+    const filePath = path.join(moviesDir, file);
+    const stat = fs.statSync(filePath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+    
+    console.log(`📹 Streaming file: ${file}, Size: ${fileSize} bytes`);
+    
+    if (range) {
+      // Parse range header
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = (end - start) + 1;
+      
+      console.log(`📊 Range request: ${start}-${end}/${fileSize}`);
+      
+      // Create read stream for the requested range
+      const file_stream = fs.createReadStream(filePath, { start, end });
+      
+      // Set appropriate headers for range request
+      const head = {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': getVideoMimeType(path.extname(file).toLowerCase()),
+        'Cache-Control': 'no-cache'
+      };
+      
+      res.writeHead(206, head);
+      file_stream.pipe(res);
+    } else {
+      // No range header, send entire file
+      console.log(`📹 Sending entire file: ${file}`);
+      
+      const head = {
+        'Content-Length': fileSize,
+        'Content-Type': getVideoMimeType(path.extname(file).toLowerCase()),
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': 'no-cache'
+      };
+      
+      res.writeHead(200, head);
+      fs.createReadStream(filePath).pipe(res);
+    }
+  } catch (error) {
+    console.error('Error streaming video:', error);
+    res.status(500).json({ error: 'Unable to stream video', details: error.message });
+  }
+});
 
 // Routes
 
