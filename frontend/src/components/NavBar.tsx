@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 interface NavBarProps {
@@ -15,9 +15,11 @@ const NavBar: React.FC<NavBarProps> = ({
 }) => {
   const { logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
+    navigate('/login');
   };
 
   const isActive = (path: string) => {
