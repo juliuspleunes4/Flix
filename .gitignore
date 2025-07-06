@@ -13,6 +13,7 @@ node_modules/
 
 # Build outputs
 frontend/dist/
+frontend/.vite/
 backend/dist/
 
 # Logs
