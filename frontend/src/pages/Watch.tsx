@@ -147,66 +147,68 @@ const Watch: React.FC = () => {
       )}
 
       {/* Video Player */}
-      <div className="relative w-full h-screen bg-black">
-        {currentMovie.source === 'gdrive' ? (
-          // Google Drive iframe player
-          <iframe
-            src={currentMovie.url}
-            className="w-full h-full"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-            style={{
-              border: 'none',
-              filter: 'contrast(1.1) brightness(1.05)'
-            }}
-            onLoad={() => console.log('✅ Google Drive iframe loaded')}
-            onError={() => {
-              console.error('❌ Google Drive iframe error');
-              setError('Error loading Google Drive video.');
-            }}
-          />
-        ) : (
-          // Local video player
-          <video
-            ref={videoRef}
-            controls
-            autoPlay
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              console.error('❌ Video player error:', e);
-              console.error('❌ Video source:', `http://localhost:3000/api/stream/${currentMovie.id}`);
-              console.error('❌ Movie object:', currentMovie);
-              setError('Error playing the video.');
-            }}
-            onLoadStart={() => {
-              console.log('🎬 Video load started');
-              console.log('🎬 Video source:', `http://localhost:3000/api/stream/${currentMovie.id}`);
-            }}
-            onCanPlay={() => console.log('✅ Video can play')}
-            onLoadedData={() => console.log('✅ Video data loaded')}
-            onLoadedMetadata={() => console.log('✅ Video metadata loaded')}
-            onProgress={() => console.log('📊 Video loading progress')}
-            onWaiting={() => console.log('⏳ Video waiting for data')}
-            onPlaying={() => console.log('▶️ Video is playing')}
-            onPause={() => console.log('⏸️ Video paused')}
-            style={{
-              filter: 'contrast(1.1) brightness(1.05)'
-            }}
-          >
-            <source
-              src={`http://localhost:3000/api/stream/${currentMovie.id}`}
-              type={currentMovie.filename?.endsWith('.mp4') ? 'video/mp4' : 
-                    currentMovie.filename?.endsWith('.mkv') ? 'video/x-matroska' : 
-                    currentMovie.filename?.endsWith('.avi') ? 'video/x-msvideo' :
-                    currentMovie.filename?.endsWith('.mov') ? 'video/quicktime' :
-                    currentMovie.filename?.endsWith('.wmv') ? 'video/x-ms-wmv' :
-                    'video/mp4'}
+      <div className="relative w-full h-screen bg-black flex items-center justify-center">
+        <div className="w-4/5 h-4/5 max-w-6xl max-h-screen aspect-video">
+          {currentMovie.source === 'gdrive' ? (
+            // Google Drive iframe player
+            <iframe
+              src={currentMovie.url}
+              className="w-full h-full"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              style={{
+                border: 'none',
+                filter: 'contrast(1.1) brightness(1.05)'
+              }}
+              onLoad={() => console.log('✅ Google Drive iframe loaded')}
+              onError={() => {
+                console.error('❌ Google Drive iframe error');
+                setError('Error loading Google Drive video.');
+              }}
             />
-            <p className="text-white">
-              Your browser does not support the video element.
-            </p>
-          </video>
-        )}
+          ) : (
+            // Local video player
+            <video
+              ref={videoRef}
+              controls
+              autoPlay
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                console.error('❌ Video player error:', e);
+                console.error('❌ Video source:', `http://localhost:3000/api/stream/${currentMovie.id}`);
+                console.error('❌ Movie object:', currentMovie);
+                setError('Error playing the video.');
+              }}
+              onLoadStart={() => {
+                console.log('🎬 Video load started');
+                console.log('🎬 Video source:', `http://localhost:3000/api/stream/${currentMovie.id}`);
+              }}
+              onCanPlay={() => console.log('✅ Video can play')}
+              onLoadedData={() => console.log('✅ Video data loaded')}
+              onLoadedMetadata={() => console.log('✅ Video metadata loaded')}
+              onProgress={() => console.log('📊 Video loading progress')}
+              onWaiting={() => console.log('⏳ Video waiting for data')}
+              onPlaying={() => console.log('▶️ Video is playing')}
+              onPause={() => console.log('⏸️ Video paused')}
+              style={{
+                filter: 'contrast(1.1) brightness(1.05)'
+              }}
+            >
+              <source
+                src={`http://localhost:3000/api/stream/${currentMovie.id}`}
+                type={currentMovie.filename?.endsWith('.mp4') ? 'video/mp4' : 
+                      currentMovie.filename?.endsWith('.mkv') ? 'video/x-matroska' : 
+                      currentMovie.filename?.endsWith('.avi') ? 'video/x-msvideo' :
+                      currentMovie.filename?.endsWith('.mov') ? 'video/quicktime' :
+                      currentMovie.filename?.endsWith('.wmv') ? 'video/x-ms-wmv' :
+                      'video/mp4'}
+              />
+              <p className="text-white">
+                Your browser does not support the video element.
+              </p>
+            </video>
+          )}
+        </div>
 
         {/* Custom fullscreen exit button */}
         {isFullscreen && (

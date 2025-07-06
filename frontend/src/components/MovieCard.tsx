@@ -49,10 +49,42 @@ const MovieCard: React.FC<MovieCardProps> = ({
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,_rgba(229,9,20,0.2)_0%,_transparent_50%)]"></div>
           </div>
           
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
-          <div className="text-5xl opacity-20 group-hover:opacity-40 transition-all duration-500 transform group-hover:scale-110 z-10">
-            🎬
-          </div>
+          {movie.thumbnail ? (
+            <>
+              <img
+                src={movie.thumbnail}
+                alt={movie.title}
+                className="w-full h-full object-cover absolute inset-0 transition-opacity duration-300"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+                onLoad={(e) => {
+                  // Hide the placeholder when image loads
+                  const placeholder = (e.target as HTMLImageElement).parentElement?.querySelector('.thumbnail-placeholder') as HTMLElement;
+                  if (placeholder) placeholder.style.display = 'none';
+                }}
+                onError={(e) => {
+                  // Show placeholder on error
+                  (e.target as HTMLImageElement).style.display = 'none';
+                  const placeholder = (e.target as HTMLImageElement).parentElement?.querySelector('.thumbnail-placeholder') as HTMLElement;
+                  if (placeholder) placeholder.style.display = 'block';
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
+              <div className="text-5xl opacity-20 group-hover:opacity-40 transition-all duration-500 transform group-hover:scale-110 z-10 thumbnail-placeholder">
+                🎬
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
+              <div className="text-5xl opacity-20 group-hover:opacity-40 transition-all duration-500 transform group-hover:scale-110 z-10">
+                🎬
+              </div>
+            </>
+          )}
           
           {/* Progress bar (simulated watch progress) */}
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700/50">
@@ -69,8 +101,38 @@ const MovieCard: React.FC<MovieCardProps> = ({
         }`}>
           {/* Backdrop */}
           <div className="aspect-[2/3] bg-gradient-to-br from-netflix-red/30 via-netflix-gray-dark to-netflix-black flex items-center justify-center relative overflow-hidden rounded-t-lg">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30"></div>
-            <div className="text-6xl opacity-30 z-10">🎬</div>
+            {movie.thumbnail ? (
+              <>
+                <img
+                  src={movie.thumbnail}
+                  alt={movie.title}
+                  className="w-full h-full object-cover absolute inset-0 transition-opacity duration-300"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                  onLoad={(e) => {
+                    // Hide the placeholder when image loads
+                    const placeholder = (e.target as HTMLImageElement).parentElement?.querySelector('.hover-thumbnail-placeholder') as HTMLElement;
+                    if (placeholder) placeholder.style.display = 'none';
+                  }}
+                  onError={(e) => {
+                    // Show placeholder on error
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const placeholder = (e.target as HTMLImageElement).parentElement?.querySelector('.hover-thumbnail-placeholder') as HTMLElement;
+                    if (placeholder) placeholder.style.display = 'block';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30"></div>
+                <div className="text-6xl opacity-30 z-10 hover-thumbnail-placeholder">🎬</div>
+              </>
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/30"></div>
+                <div className="text-6xl opacity-30 z-10">🎬</div>
+              </>
+            )}
             
             {/* Play Button Overlay */}
             <div className="absolute inset-0 flex items-center justify-center">

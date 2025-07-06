@@ -447,6 +447,42 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
+// Thumbnail generation endpoint
+app.get('/api/thumbnail/:id', requireAuth, (req, res) => {
+  const movieId = req.params.id;
+  
+  try {
+    // Extract movie title from ID
+    let title = 'Movie';
+    if (movieId.startsWith('local_')) {
+      const movieIndex = parseInt(movieId.replace('local_', '')) - 1;
+      const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
+      
+      if (fs.existsSync(moviesDir)) {
+        const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+        const files = fs.readdirSync(moviesDir)
+          .filter(file => {
+            const ext = path.extname(file).toLowerCase();
+            return supportedFormats.includes(ext);
+          });
+        
+        if (files[movieIndex]) {
+          title = path.parse(files[movieIndex]).name.replace(/[._-]/g, ' ').trim();
+        }
+      }
+    }
+    
+    // Create a nice movie poster style placeholder
+    const placeholderUrl = `https://via.placeholder.com/300x450/141414/E50914?text=${encodeURIComponent(title)}&font=Arial`;
+    res.redirect(placeholderUrl);
+  } catch (error) {
+    console.error('Error generating thumbnail:', error);
+    // Fallback placeholder
+    const fallbackUrl = 'https://via.placeholder.com/300x450/141414/6B7280?text=Movie';
+    res.redirect(fallbackUrl);
+  }
+});
+
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
