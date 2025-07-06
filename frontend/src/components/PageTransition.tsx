@@ -12,7 +12,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({
   children,
   in: inProp = true,
   timeout = 300,
-  classNames = 'page-transition'
+  classNames = 'page'
 }) => {
   const nodeRef = React.useRef(null);
 

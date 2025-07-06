@@ -220,24 +220,20 @@ video:hover {
 /* Page Transition Animations */
 .page-enter {
   opacity: 0;
-  transform: translateY(20px);
 }
 
 .page-enter-active {
   opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms ease-in, transform 300ms ease-in;
+  transition: opacity 300ms ease-in;
 }
 
 .page-exit {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .page-exit-active {
   opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  transition: opacity 200ms ease-out;
 }
 
 /* Alternative fade transition for faster switches */

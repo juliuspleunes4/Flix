@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 import { useAuth } from '../hooks/useAuth';
@@ -7,6 +7,7 @@ import Home from '../pages/Home';
 import Movies from '../pages/Movies';
 import Watch from '../pages/Watch';
 import NotFound from '../pages/NotFound';
+import NavBar from './NavBar';
 import PageTransition from './PageTransition';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -25,45 +26,58 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const isLoginPage = location.pathname === '/login';
   
   return (
-    <TransitionGroup component={null}>
-      <PageTransition 
-        key={location.pathname}
-        classNames="page"
-        timeout={300}
-      >
-        <Routes location={location}>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/movies"
-            element={
-              <ProtectedRoute>
-                <Movies />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/watch/:id"
-            element={
-              <ProtectedRoute>
-                <Watch />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </PageTransition>
-    </TransitionGroup>
+    <div className="min-h-screen bg-netflix-black text-white">
+      {/* Persistent NavBar - only show on authenticated pages */}
+      {!isLoginPage && (
+        <NavBar 
+          searchQuery={searchQuery} 
+          setSearchQuery={setSearchQuery}
+          showSearch={location.pathname === '/home' || location.pathname === '/movies'}
+        />
+      )}
+      
+      {/* Animated content area */}
+      <TransitionGroup component={null}>
+        <PageTransition 
+          key={location.pathname}
+          timeout={300}
+        >
+          <Routes location={location}>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Home searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/movies"
+              element={
+                <ProtectedRoute>
+                  <Movies searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/watch/:id"
+              element={
+                <ProtectedRoute>
+                  <Watch />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </PageTransition>
+      </TransitionGroup>
+    </div>
   );
 };
 

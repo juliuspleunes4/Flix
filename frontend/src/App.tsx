@@ -6,9 +6,7 @@ import './index.css';
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-netflix-black text-white">
-        <AnimatedRoutes />
-      </div>
+      <AnimatedRoutes />
     </Router>
   );
 };
