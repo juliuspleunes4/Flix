@@ -62,20 +62,44 @@ Toegang tot Flix is afgeschermd via een gedeeld wachtwoord. Na succesvolle login
 flix/
 ├── backend/
 │   ├── server.js
+│   ├── package.json
+│   ├── .env.example
 │   ├── .env
 │   └── public/
 │       └── movies/
 │           └── <film.mp4>
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Login.tsx
-│   │   │   ├── Home.tsx
-│   │   │   └── Watch.tsx
 │   │   ├── components/
-│   │   └── App.tsx
+│   │   │   ├── AnimatedRoutes.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── MovieCard.tsx
+│   │   │   ├── NavBar.tsx
+│   │   │   └── PageTransition.tsx
+│   │   ├── pages/
+│   │   │   ├── Home.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── Movies.tsx
+│   │   │   ├── NotFound.tsx
+│   │   │   └── Watch.tsx
+│   │   ├── hooks/
+│   │   │   └── useAuth.ts
+│   │   ├── utils/
+│   │   │   └── api.ts
+│   │   ├── assets/
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── index.css
+│   ├── public/
+│   ├── package.json
 │   ├── vite.config.ts
-│   └── tailwind.config.js
+│   ├── tailwind.config.js
+│   └── tsconfig.json
+├── .gitignore
+├── CHANGELOG.md
+├── GETTING_STARTED.md
+├── LICENSE.md
+└── README.md
 ```
 
 ---
