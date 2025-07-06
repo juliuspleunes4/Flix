@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { apiClient, type Movie, formatFileSize } from '../utils/api';
 
@@ -9,6 +9,7 @@ const Home: React.FC = () => {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadMovies();
@@ -29,6 +30,7 @@ const Home: React.FC = () => {
 
   const handleLogout = async () => {
     await logout();
+    navigate('/login');
   };
 
   const filteredMovies = searchQuery 
