@@ -41,36 +41,42 @@ const NavBar: React.FC<NavBarProps> = ({
         <div className="flex justify-between items-center py-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0' }}>
           {/* Logo and Navigation */}
           <div className="flex items-center space-x-10" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
-            <Link to="/home" className="text-4xl font-black text-netflix-red tracking-tight cursor-pointer hover:scale-105 transition-transform duration-200" style={{ 
+            <Link to="/home" className="text-4xl font-black text-netflix-red tracking-tight cursor-pointer hover:scale-105 transition-transform duration-200 focus:outline-none" style={{ 
               fontSize: '2.25rem', 
               fontWeight: '900', 
               color: '#E50914', 
               letterSpacing: '-0.025em', 
               cursor: 'pointer',
               transition: 'transform 0.2s',
-              textDecoration: 'none'
+              textDecoration: 'none',
+              outline: 'none',
+              boxShadow: 'none'
             }}>
               FLIX
             </Link>
             <nav className="hidden md:flex space-x-8" style={{ display: 'flex', gap: '2rem' }}>
               <Link 
                 to="/home" 
-                className={`transition-colors font-medium text-base relative group ${isActive('/home') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+                className={`transition-colors font-medium text-base relative group focus:outline-none ${isActive('/home') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
                 style={{ 
                   color: isActive('/home') ? 'white' : '#9CA3AF', 
                   fontWeight: '500', 
-                  textDecoration: 'none' 
+                  textDecoration: 'none',
+                  outline: 'none',
+                  boxShadow: 'none'
                 }}
               >
                 Home
               </Link>
               <Link 
                 to="/movies" 
-                className={`transition-colors font-medium text-base relative group ${isActive('/movies') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+                className={`transition-colors font-medium text-base relative group focus:outline-none ${isActive('/movies') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
                 style={{ 
                   color: isActive('/movies') ? 'white' : '#9CA3AF', 
                   fontWeight: '500', 
-                  textDecoration: 'none' 
+                  textDecoration: 'none',
+                  outline: 'none',
+                  boxShadow: 'none'
                 }}
               >
                 Movies
@@ -88,7 +94,7 @@ const NavBar: React.FC<NavBarProps> = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search movies..."
-                  className="bg-netflix-gray-dark border border-netflix-gray text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-netflix-red transition-all duration-200 w-64"
+                  className="bg-netflix-gray-dark border border-netflix-gray text-white px-4 py-2 rounded-md focus:outline-none transition-all duration-200 w-64"
                   style={{
                     backgroundColor: '#222222',
                     border: '1px solid #333333',
@@ -119,13 +125,15 @@ const NavBar: React.FC<NavBarProps> = ({
               </div>
               <button
                 onClick={handleLogout}
-                className="text-gray-300 hover:text-white transition-colors font-medium"
+                className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none"
                 style={{ 
                   color: '#D1D5DB', 
                   background: 'none', 
                   border: 'none', 
                   fontWeight: '500',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  outline: 'none',
+                  boxShadow: 'none'
                 }}
               >
                 Sign Out
