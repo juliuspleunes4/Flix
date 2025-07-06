@@ -37,56 +37,72 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-netflix-black to-netflix-dark flex items-center justify-center px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-netflix-red mb-2">🎬 Flix</h1>
-          <p className="text-gray-300">Welcome to your personal movie library</p>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="bg-netflix-gray bg-opacity-75 rounded-lg p-8 space-y-6">
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-netflix-dark border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-netflix-red focus:border-transparent"
-              placeholder="Enter your password"
-              disabled={isLoading}
-            />
+    <div className="min-h-screen bg-gradient-to-b from-netflix-black via-netflix-black-light to-netflix-dark relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-netflix-red/20 to-transparent"></div>
+      </div>
+      
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+        <div className="w-full max-w-md animate-fade-in">
+          {/* Logo and Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold text-netflix-red mb-4 tracking-tight">FLIX</h1>
+            <div className="w-16 h-1 bg-netflix-red mx-auto mb-6"></div>
+            <p className="text-gray-300 text-lg font-light">Welcome to your personal movie library</p>
           </div>
-
-          {error && (
-            <div className="text-netflix-red text-sm text-center bg-red-900 bg-opacity-20 py-2 px-4 rounded">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading || !password.trim()}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-netflix-red hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-netflix-red disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-          >
-            {isLoading ? (
-              <div className="flex items-center">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Logging in...
+          
+          {/* Login Form */}
+          <div className="bg-netflix-black-light/80 backdrop-blur-md rounded-lg p-8 shadow-netflix border border-netflix-gray/30">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-4 bg-netflix-gray-dark border border-netflix-gray rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-netflix-red focus:border-netflix-red transition-all duration-200 text-lg"
+                  placeholder="Enter your password"
+                  disabled={isLoading}
+                />
               </div>
-            ) : (
-              'Login'
-            )}
-          </button>
-        </form>
-        
-        <div className="text-center text-gray-400 text-sm">
-          <p>For personal use only</p>
-          <p>Julius & Michiel © 2025</p>
+
+              {error && (
+                <div className="bg-netflix-red/20 border border-netflix-red/50 text-netflix-red text-sm p-4 rounded-md backdrop-blur-sm animate-slide-up">
+                  <div className="flex items-center">
+                    <span className="mr-2">⚠️</span>
+                    {error}
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading || !password.trim()}
+                className="w-full bg-netflix-red hover:bg-netflix-red-dark disabled:bg-netflix-gray disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-md transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg text-lg tracking-wide"
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                    Logging in...
+                  </div>
+                ) : (
+                  'Sign In'
+                )}
+              </button>
+            </form>
+          </div>
+          
+          {/* Footer */}
+          <div className="text-center mt-8 text-gray-400 text-sm">
+            <p className="mb-2">For personal use only</p>
+            <p className="text-xs opacity-75">Julius & Michiel © 2025</p>
+          </div>
         </div>
       </div>
     </div>
