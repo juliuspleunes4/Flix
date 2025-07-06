@@ -1,6 +1,8 @@
 # Environment files
 backend\.env
 frontend\.env
+backend/.env
+frontend/.env
 
 # IDE/Editor files
 .vscode/
@@ -40,3 +42,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Example movies added for testing
+backend/public/movies/Legend_of_Korra.mkv

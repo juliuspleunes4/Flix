@@ -231,54 +231,45 @@ const Home: React.FC = () => {
         )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
-          {/* Enhanced Hero Section */}
+          {/* Clean Hero Section */}
           <section className="mb-16" style={{ marginBottom: '4rem' }}>
-            <div className="relative py-12" style={{ position: 'relative', padding: '3rem 0' }}>
-              <div className="absolute inset-0 bg-gradient-to-r from-netflix-red/5 to-transparent rounded-3xl" style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to right, rgba(229, 9, 20, 0.05), transparent)',
-                borderRadius: '1.5rem'
-              }}></div>
-              <div className="relative z-10" style={{ position: 'relative', zIndex: 10 }}>
-                <h2 className="text-6xl md:text-7xl font-black text-white mb-6 tracking-tight" style={{
-                  fontSize: '3.75rem',
-                  fontWeight: '900',
-                  color: 'white',
-                  marginBottom: '1.5rem',
-                  letterSpacing: '-0.025em'
-                }}>
-                  {searchQuery ? 'Search Results' : 'Your Library'}
-                </h2>
-                <p className="text-2xl text-gray-300 mb-8 max-w-3xl font-light" style={{
-                  fontSize: '1.5rem',
-                  color: '#D1D5DB',
-                  marginBottom: '2rem',
-                  maxWidth: '48rem',
-                  fontWeight: '300'
-                }}>
-                  {searchQuery ? (
-                    `${filteredMovies.length} ${filteredMovies.length === 1 ? 'movie' : 'movies'} found for "${searchQuery}"`
-                  ) : (
-                    `${movies.length} ${movies.length === 1 ? 'movie' : 'movies'} ready to stream in stunning quality`
-                  )}
-                </p>
-                <div className="flex items-center space-x-6" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                  <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" style={{
-                      width: '0.75rem',
-                      height: '0.75rem',
-                      backgroundColor: '#10B981',
-                      borderRadius: '50%'
-                    }}></div>
-                    <span className="text-green-400 font-medium" style={{ color: '#34D399', fontWeight: '500' }}>All systems online</span>
-                  </div>
-                  <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <svg className="w-5 h-5 text-netflix-red" width="20" height="20" fill="#E50914" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-gray-300 font-medium" style={{ color: '#D1D5DB', fontWeight: '500' }}>Instant streaming</span>
-                  </div>
+            <div className="py-12" style={{ padding: '3rem 0' }}>
+              <h2 className="text-5xl md:text-6xl font-bold text-white mb-4" style={{
+                fontSize: '3rem',
+                fontWeight: '700',
+                color: 'white',
+                marginBottom: '1rem',
+                letterSpacing: '-0.02em'
+              }}>
+                {searchQuery ? 'Search Results' : 'Your Library'}
+              </h2>
+              <p className="text-lg text-gray-400 mb-8" style={{
+                fontSize: '1.125rem',
+                color: '#9CA3AF',
+                marginBottom: '2rem',
+                fontWeight: '400'
+              }}>
+                {searchQuery ? (
+                  `${filteredMovies.length} ${filteredMovies.length === 1 ? 'movie' : 'movies'} found for "${searchQuery}"`
+                ) : (
+                  `${movies.length} ${movies.length === 1 ? 'movie' : 'movies'} available to watch`
+                )}
+              </p>
+              <div className="flex items-center space-x-6" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div className="w-2 h-2 bg-green-500 rounded-full" style={{
+                    width: '0.5rem',
+                    height: '0.5rem',
+                    backgroundColor: '#10B981',
+                    borderRadius: '50%'
+                  }}></div>
+                  <span className="text-green-400 font-medium text-sm" style={{ color: '#34D399', fontWeight: '500', fontSize: '0.875rem' }}>Online</span>
+                </div>
+                <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg className="w-4 h-4 text-netflix-red" width="16" height="16" fill="#E50914" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-400 font-medium text-sm" style={{ color: '#9CA3AF', fontWeight: '500', fontSize: '0.875rem' }}>HD Streaming</span>
                 </div>
               </div>
             </div>
@@ -286,15 +277,8 @@ const Home: React.FC = () => {
 
           {filteredMovies.length === 0 ? (
             <div className="text-center py-32 animate-fade-in" style={{ textAlign: 'center', padding: '8rem 0' }}>
-              <div className="relative inline-block" style={{ position: 'relative', display: 'inline-block' }}>
-                <div className="text-9xl mb-8 opacity-30" style={{ fontSize: '8rem', marginBottom: '2rem', opacity: 0.3 }}>🎬</div>
-                <div className="absolute inset-0 bg-netflix-red/10 rounded-full blur-3xl" style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundColor: 'rgba(229, 9, 20, 0.1)',
-                  borderRadius: '50%',
-                  filter: 'blur(48px)'
-                }}></div>
+              <div className="mb-8" style={{ marginBottom: '2rem' }}>
+                <div className="text-6xl mb-6" style={{ fontSize: '4rem', marginBottom: '1.5rem', opacity: 0.6 }}>🎬</div>
               </div>
               <h3 className="text-4xl font-bold text-white mb-6" style={{
                 fontSize: '2.25rem',
@@ -307,7 +291,7 @@ const Home: React.FC = () => {
               <p className="text-gray-400 mb-12 text-xl max-w-2xl mx-auto leading-relaxed" style={{
                 color: '#9CA3AF',
                 marginBottom: '3rem',
-                fontSize: '1.25rem',
+                fontSize: '1.125rem',
                 maxWidth: '42rem',
                 margin: '0 auto 3rem auto',
                 lineHeight: '1.625'
@@ -324,13 +308,13 @@ const Home: React.FC = () => {
                 style={{
                   backgroundColor: '#E50914',
                   color: 'white',
-                  padding: '1rem 3rem',
-                  borderRadius: '0.75rem',
+                  padding: '0.875rem 2.5rem',
+                  borderRadius: '0.5rem',
                   border: 'none',
-                  fontWeight: 'bold',
-                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  fontSize: '1rem',
                   cursor: 'pointer',
-                  boxShadow: '0 25px 50px -12px rgba(229, 9, 20, 0.25)'
+                  transition: 'all 0.3s ease'
                 }}
               >
                 Refresh Library
@@ -353,108 +337,115 @@ const Home: React.FC = () => {
                 gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
                 gap: '1.5rem' 
               }}>
-                {filteredMovies.map((movie, index) => (
+                {filteredMovies.map((movie) => (
                   <Link
                     key={movie.id}
                     to={`/watch/${movie.id}`}
-                    className="group relative bg-netflix-gray-dark rounded-xl overflow-hidden hover:scale-110 transition-all duration-500 shadow-2xl hover:shadow-netflix hover:z-10 movie-card"
+                    className="group relative bg-netflix-gray-dark rounded-lg overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                     style={{ 
                       position: 'relative',
-                      backgroundColor: '#222222',
-                      borderRadius: '0.75rem',
+                      backgroundColor: '#1a1a1a',
+                      borderRadius: '0.5rem',
                       overflow: 'hidden',
-                      transition: 'all 0.5s',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                      transition: 'all 0.3s ease',
                       textDecoration: 'none',
                       color: 'inherit',
-                      animationDelay: `${index * 50}ms`
+                      cursor: 'pointer'
                     }}
                   >
-                    {/* Enhanced Movie Poster */}
-                    <div className="aspect-[2/3] bg-gradient-to-br from-netflix-red/20 via-netflix-gray-dark to-netflix-black flex items-center justify-center relative overflow-hidden" style={{
+                    {/* Movie Poster */}
+                    <div className="aspect-[2/3] bg-gray-800 flex items-center justify-center relative overflow-hidden" style={{
                       aspectRatio: '2/3',
-                      background: 'linear-gradient(to bottom right, rgba(229, 9, 20, 0.2), #222222, #000000)',
+                      backgroundColor: '#2a2a2a',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       position: 'relative',
                       overflow: 'hidden'
                     }}>
-                      {/* Background pattern */}
-                      <div className="absolute inset-0 opacity-10" style={{ position: 'absolute', inset: 0, opacity: 0.1 }}>
-                        <div className="absolute inset-0" style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: 'radial-gradient(circle at 20% 50%, rgba(229,9,20,0.3) 0%, transparent 50%)'
-                        }}></div>
-                        <div className="absolute inset-0" style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: 'radial-gradient(circle at 80% 20%, rgba(229,9,20,0.2) 0%, transparent 50%)'
-                        }}></div>
-                      </div>
-                      
-                      <div className="absolute inset-0" style={{
-                        position: 'absolute',
-                        inset: 0,
-                        background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent, rgba(0,0,0,0.2))'
-                      }}></div>
-                      <div className="text-6xl opacity-20 z-10" style={{
-                        fontSize: '3.75rem',
-                        opacity: 0.2,
-                        zIndex: 10,
-                        transition: 'all 0.5s'
+                      <div className="text-4xl text-gray-600" style={{
+                        fontSize: '2.5rem',
+                        color: '#6B7280'
                       }}>🎬</div>
                       
-                      {/* Progress bar simulation */}
-                      <div className="absolute bottom-0 left-0 right-0 h-1" style={{
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 transition-all duration-300 flex items-center justify-center" style={{
+                        position: 'absolute',
+                        inset: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.3s ease'
+                      }}>
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center" style={{
+                          opacity: 0,
+                          transition: 'opacity 0.3s ease',
+                          textAlign: 'center'
+                        }}>
+                          <div className="w-12 h-12 mx-auto mb-2 bg-white bg-opacity-90 rounded-full flex items-center justify-center" style={{
+                            width: '3rem',
+                            height: '3rem',
+                            margin: '0 auto 0.5rem auto',
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <svg className="w-5 h-5 text-black ml-0.5" width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <p className="text-white font-medium text-sm" style={{ color: 'white', fontWeight: '500', fontSize: '0.875rem' }}>Play</p>
+                        </div>
+                      </div>
+                      
+                      {/* Progress bar */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700" style={{
                         position: 'absolute',
                         bottom: 0,
                         left: 0,
                         right: 0,
                         height: '0.25rem',
-                        backgroundColor: 'rgba(75, 85, 99, 0.5)'
+                        backgroundColor: '#374151'
                       }}>
-                        <div style={{ 
+                        <div className="h-full bg-netflix-red transition-all duration-300 opacity-0 group-hover:opacity-100" style={{ 
                           height: '100%', 
                           backgroundColor: '#E50914', 
                           width: `${Math.random() * 70 + 10}%`,
                           opacity: 0,
-                          transition: 'all 0.3s'
+                          transition: 'all 0.3s ease'
                         }}></div>
                       </div>
                     </div>
                     
-                    {/* Enhanced Movie Info */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4" style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      background: 'linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0.9), transparent)',
-                      padding: '1rem'
-                    }}>
-                      <h3 className="text-white text-base font-bold truncate mb-2" style={{
+                    {/* Movie Info */}
+                    <div className="p-3" style={{ padding: '0.75rem' }}>
+                      <h3 className="text-white font-medium text-sm truncate mb-1" style={{
                         color: 'white',
-                        fontSize: '1rem',
-                        fontWeight: 'bold',
+                        fontWeight: '500',
+                        fontSize: '0.875rem',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        marginBottom: '0.5rem',
-                        transition: 'color 0.3s'
+                        marginBottom: '0.25rem'
                       }}>
                         {movie.title}
                       </h3>
-                      <div className="flex items-center justify-between" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div className="flex items-center justify-between text-xs text-gray-400" style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between',
+                        fontSize: '0.75rem',
+                        color: '#9CA3AF'
+                      }}>
                         {movie.size && (
-                          <p className="text-gray-400 text-xs" style={{ color: '#9CA3AF', fontSize: '0.75rem' }}>
-                            {formatFileSize(movie.size)}
-                          </p>
+                          <span>{formatFileSize(movie.size)}</span>
                         )}
                         <div className="flex items-center space-x-1" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                          <span className="text-yellow-400 text-xs" style={{ color: '#FBBF24', fontSize: '0.75rem' }}>★</span>
-                          <span className="text-gray-400 text-xs" style={{ color: '#9CA3AF', fontSize: '0.75rem' }}>{(Math.random() * 2 + 3).toFixed(1)}</span>
+                          <span style={{ color: '#FBBF24' }}>★</span>
+                          <span>{(Math.random() * 2 + 3).toFixed(1)}</span>
                         </div>
                       </div>
                     </div>
