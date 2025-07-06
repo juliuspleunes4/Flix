@@ -22,11 +22,11 @@ const Login: React.FC = () => {
     try {
       const success = await login(password);
       if (!success) {
-        setError('Onjuist wachtwoord. Probeer het opnieuw.');
+        setError('Incorrect password. Please try again.');
         setPassword('');
       }
     } catch {
-      setError('Er ging iets mis. Probeer het later opnieuw.');
+      setError('Something went wrong. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -41,13 +41,13 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-netflix-red mb-2">🎬 Flix</h1>
-          <p className="text-gray-300">Welkom bij jouw persoonlijke filmbibliotheek</p>
+          <p className="text-gray-300">Welcome to your personal movie library</p>
         </div>
         
         <form onSubmit={handleSubmit} className="bg-netflix-gray bg-opacity-75 rounded-lg p-8 space-y-6">
           <div>
             <label htmlFor="password" className="sr-only">
-              Wachtwoord
+              Password
             </label>
             <input
               id="password"
@@ -57,7 +57,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-netflix-dark border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-netflix-red focus:border-transparent"
-              placeholder="Voer je wachtwoord in"
+              placeholder="Enter your password"
               disabled={isLoading}
             />
           </div>
@@ -76,16 +76,16 @@ const Login: React.FC = () => {
             {isLoading ? (
               <div className="flex items-center">
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Inloggen...
+                Logging in...
               </div>
             ) : (
-              'Inloggen'
+              'Login'
             )}
           </button>
         </form>
         
         <div className="text-center text-gray-400 text-sm">
-          <p>Alleen voor persoonlijk gebruik</p>
+          <p>For personal use only</p>
           <p>Julius & Michiel © 2025</p>
         </div>
       </div>

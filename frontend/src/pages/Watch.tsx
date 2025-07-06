@@ -33,7 +33,7 @@ const Watch: React.FC = () => {
       setMovie(movieData);
     } catch (error) {
       console.error('Failed to load movie:', error);
-      setError('Film kon niet geladen worden.');
+      setError('Movie could not be loaded.');
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +62,7 @@ const Watch: React.FC = () => {
       <div className="min-h-screen bg-netflix-black flex items-center justify-center">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-300">Film laden...</p>
+          <p className="text-gray-300">Loading movie...</p>
         </div>
       </div>
     );
@@ -74,13 +74,13 @@ const Watch: React.FC = () => {
         <div className="text-center">
           <div className="text-6xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-white mb-4">
-            {error || 'Film niet gevonden'}
+            {error || 'Movie not found'}
           </h2>
           <Link
             to="/home"
             className="bg-netflix-red hover:bg-red-700 text-white px-6 py-3 rounded transition-colors duration-200"
           >
-            Terug naar overzicht
+            Back to overview
           </Link>
         </div>
       </div>
@@ -98,7 +98,7 @@ const Watch: React.FC = () => {
               className="flex items-center text-white hover:text-gray-300 transition-colors duration-200"
             >
               <span className="text-2xl mr-2">←</span>
-              <span>Terug</span>
+              <span>Back</span>
             </button>
             <h1 className="text-xl font-semibold text-white truncate max-w-md">
               {movie.title}
@@ -120,7 +120,7 @@ const Watch: React.FC = () => {
           controls
           autoPlay
           className="w-full h-full object-contain bg-black"
-          onError={() => setError('Fout bij het afspelen van de video.')}
+          onError={() => setError('Error playing the video.')}
         >
           <source
             src={`http://localhost:3000${movie.url}`}
@@ -129,7 +129,7 @@ const Watch: React.FC = () => {
                   'video/avi'}
           />
           <p className="text-white">
-            Je browser ondersteunt het video element niet.
+            Your browser does not support the video element.
           </p>
         </video>
 
@@ -152,12 +152,12 @@ const Watch: React.FC = () => {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-white mb-2">{movie.title}</h2>
             <div className="text-gray-300 mb-4 space-y-1">
-              <p>Bestandsnaam: {movie.filename}</p>
+              <p>Filename: {movie.filename}</p>
               {movie.size && (
-                <p>Bestandsgrootte: {formatFileSize(movie.size)}</p>
+                <p>File size: {formatFileSize(movie.size)}</p>
               )}
               {movie.modified && (
-                <p>Gewijzigd: {new Date(movie.modified).toLocaleDateString('nl-NL')}</p>
+                <p>Modified: {new Date(movie.modified).toLocaleDateString('en-US')}</p>
               )}
             </div>
             <div className="flex space-x-4">
@@ -165,13 +165,13 @@ const Watch: React.FC = () => {
                 onClick={toggleFullscreen}
                 className="bg-netflix-red hover:bg-red-700 text-white px-6 py-2 rounded transition-colors duration-200"
               >
-                Volledig scherm
+                Fullscreen
               </button>
               <Link
                 to="/home"
                 className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded transition-colors duration-200"
               >
-                Andere films
+                Other movies
               </Link>
             </div>
           </div>

@@ -20,7 +20,7 @@ const Home: React.FC = () => {
       setMovies(movieList);
     } catch (error) {
       console.error('Failed to load movies:', error);
-      setError('Kon films niet laden. Probeer de pagina te vernieuwen.');
+      setError('Could not load movies. Please refresh the page.');
     } finally {
       setIsLoading(false);
     }
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
       <div className="min-h-screen bg-netflix-black flex items-center justify-center">
         <div className="text-center">
           <div className="spinner mx-auto mb-4"></div>
-          <p className="text-gray-300">Films laden...</p>
+          <p className="text-gray-300">Loading movies...</p>
         </div>
       </div>
     );
@@ -50,14 +50,14 @@ const Home: React.FC = () => {
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-netflix-red">🎬 Flix</h1>
               <span className="ml-3 text-gray-400 hidden sm:block">
-                Jouw persoonlijke filmbibliotheek
+                Your personal movie library
               </span>
             </div>
             <button
               onClick={handleLogout}
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              Uitloggen
+              Logout
             </button>
           </div>
         </div>
@@ -72,30 +72,30 @@ const Home: React.FC = () => {
               onClick={loadMovies}
               className="ml-4 text-red-400 hover:text-red-300 underline"
             >
-              Opnieuw proberen
+              Try again
             </button>
           </div>
         )}
 
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">Beschikbare Films</h2>
+          <h2 className="text-3xl font-bold text-white mb-2">Available Movies</h2>
           <p className="text-gray-400">
-            {movies.length} {movies.length === 1 ? 'film' : 'films'} beschikbaar
+            {movies.length} {movies.length === 1 ? 'movie' : 'movies'} available
           </p>
         </div>
 
         {movies.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🎬</div>
-            <h3 className="text-xl font-semibold text-white mb-2">Geen films gevonden</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">No movies found</h3>
             <p className="text-gray-400 mb-4">
-              Er zijn momenteel geen films beschikbaar in de bibliotheek.
+              There are currently no movies available in the library.
             </p>
             <button
               onClick={loadMovies}
               className="bg-netflix-red hover:bg-red-700 text-white px-6 py-2 rounded transition-colors duration-200"
             >
-              Vernieuwen
+              Refresh
             </button>
           </div>
         ) : (
@@ -113,7 +113,7 @@ const Home: React.FC = () => {
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="text-white text-center">
                       <div className="text-3xl mb-2">▶️</div>
-                      <p className="text-sm">Afspelen</p>
+                      <p className="text-sm">Play</p>
                     </div>
                   </div>
                 </div>

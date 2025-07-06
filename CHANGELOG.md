@@ -17,6 +17,7 @@
 - 🎨 Better responsive design with improved CSS
 - 🔍 Enhanced movie metadata with size and timestamp information
 - 📝 Improved startup logging with environment and directory status
+- 🌍 Translated entire frontend interface from Dutch to English
 
 ### Added
 - ➕ New API endpoint: `/api/stats` for server statistics
