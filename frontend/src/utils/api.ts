@@ -16,6 +16,7 @@ export interface Movie {
   duration?: string;
   rating?: string;
   quality?: string;
+  stars?: number; // Star rating (0-5)
 }
 
 class ApiClient {

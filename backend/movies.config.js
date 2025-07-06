@@ -18,6 +18,7 @@ const googleDriveMovies = [
     genre: ['Comedy', 'Drama'],
     duration: '119 min',
     rating: 'PG-13',
+    stars: 3.7,
     thumbnail: 'https://tse3.mm.bing.net/th/id/OIP.l-VfUToCVvu_1WnHw3aLcAHaK-?rs=1&pid=ImgDetMain&o=7&rm=3',
     url: 'https://drive.google.com/file/d/139KuCd4Fsch0YHE8wJYOxDNSICNAwG_q/preview',
     source: 'gdrive',

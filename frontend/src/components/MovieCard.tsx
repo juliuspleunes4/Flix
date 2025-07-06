@@ -19,8 +19,9 @@ const MovieCard: React.FC<MovieCardProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Generate a random rating for display
-  const matchPercentage = Math.floor(Math.random() * 30 + 70);
+  // Use movie stars rating or fallback to default
+  const stars = movie.stars || 3.5; // Default to 3.5 stars if not specified
+  const matchPercentage = Math.round((stars / 5) * 100); // Convert stars to percentage
   const year = new Date(movie.modified || Date.now()).getFullYear();
 
   const handleAddToList = (e: React.MouseEvent) => {
@@ -188,9 +189,12 @@ const MovieCard: React.FC<MovieCardProps> = ({
               </button>
             </div>
             
-            {/* Match Percentage */}
-            <div className="flex items-center mb-3">
+            {/* Rating Display */}
+            <div className="flex items-center justify-between mb-3">
               <span className="text-green-400 font-bold text-sm">{matchPercentage}% Match</span>
+              <div className="flex items-center">
+                <span className="text-yellow-400 text-sm">★ {stars.toFixed(1)}</span>
+              </div>
             </div>
             
             {/* Movie Details */}

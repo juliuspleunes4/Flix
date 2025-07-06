@@ -348,7 +348,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery }) => {
                         )}
                         <div className="flex items-center space-x-1" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           <span style={{ color: '#FBBF24' }}>★</span>
-                          <span>{(Math.random() * 2 + 3).toFixed(1)}</span>
+                          <span>{(movie.stars || 3.5).toFixed(1)}</span>
                         </div>
                       </div>
                     </div>

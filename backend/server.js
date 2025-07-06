@@ -187,6 +187,7 @@ app.get('/api/movies', requireAuth, (req, res) => {
             year: new Date(stats.mtime).getFullYear(),
             genre: ['Unknown'],
             rating: 'Not Rated',
+            stars: 3.5, // Default star rating for local movies
             description: `Local movie: ${name}`
           };
         });
