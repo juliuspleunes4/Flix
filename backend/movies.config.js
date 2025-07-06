@@ -19,7 +19,7 @@ const googleDriveMovies = [
     duration: '119 min',
     rating: 'PG-13',
     thumbnail: 'https://tse3.mm.bing.net/th/id/OIP.l-VfUToCVvu_1WnHw3aLcAHaK-?rs=1&pid=ImgDetMain&o=7&rm=3',
-    url: 'https://drive.google.com/uc?export=download&id=139KuCd4Fsch0YHE8wJYOxDNSICNAwG_q',
+    url: 'https://drive.google.com/file/d/139KuCd4Fsch0YHE8wJYOxDNSICNAwG_q/preview',
     source: 'gdrive',
     size: 2118155194, 
     quality: '1080p'

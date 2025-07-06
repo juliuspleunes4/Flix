@@ -122,21 +122,29 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
   const movieId = req.params.id;
   const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
   
+  console.log(`🎬 Requesting movie with ID: ${movieId}`);
+  
   try {
     // Check if it's a Google Drive movie
     if (movieId.startsWith('gdrive_')) {
+      console.log(`📂 Looking for Google Drive movie: ${movieId}`);
       const gdriveMovie = googleDriveMovies.find(movie => movie.id === movieId);
       if (gdriveMovie) {
+        console.log(`✅ Found Google Drive movie: ${gdriveMovie.title}`);
         res.json({
           ...gdriveMovie,
           modified: new Date().toISOString()
         });
         return;
+      } else {
+        console.log(`❌ Google Drive movie not found: ${movieId}`);
+        console.log(`Available Google Drive movies:`, googleDriveMovies.map(m => m.id));
       }
     }
     
     // Check if it's a local movie
     if (movieId.startsWith('local_')) {
+      console.log(`💾 Looking for local movie: ${movieId}`);
       const localIndex = parseInt(movieId.replace('local_', '')) - 1;
       
       if (!fs.existsSync(moviesDir)) {
@@ -149,6 +157,9 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
         const ext = path.extname(file).toLowerCase();
         return supportedFormats.includes(ext);
       });
+      
+      console.log(`📁 Found ${videoFiles.length} video files, looking for index ${localIndex}`);
+      console.log(`📄 Video files:`, videoFiles);
       
       if (localIndex >= 0 && localIndex < videoFiles.length) {
         const file = videoFiles[localIndex];
@@ -170,12 +181,16 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
           rating: 'Not Rated',
           description: `Local movie: ${path.parse(file).name}`
         };
+        console.log(`✅ Found local movie: ${movie.title}`);
         res.json(movie);
         return;
+      } else {
+        console.log(`❌ Local movie index out of range: ${localIndex} (max: ${videoFiles.length - 1})`);
       }
     }
     
     // Movie not found
+    console.log(`❌ Movie not found: ${movieId}`);
     res.status(404).json({ error: 'Movie not found' });
   } catch (error) {
     console.error('Error getting movie:', error);

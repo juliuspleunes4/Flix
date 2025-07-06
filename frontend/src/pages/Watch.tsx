@@ -13,6 +13,7 @@ const Watch: React.FC = () => {
 
   useEffect(() => {
     if (id) {
+      console.log(`🎬 Frontend: useEffect triggered with ID: ${id}`);
       loadMovie(id); // Changed from parseInt(id) to just id
     }
   }, [id]);
@@ -29,10 +30,14 @@ const Watch: React.FC = () => {
   const loadMovie = async (movieId: string) => { // Changed from number to string
     try {
       setIsLoading(true);
+      console.log(`🎬 Frontend: Loading movie with ID: ${movieId}`);
       const movieData = await apiClient.getMovie(movieId);
+      console.log(`✅ Frontend: Received movie data:`, movieData);
       setMovie(movieData);
+      setError(''); // Clear any previous errors when movie loads successfully
+      console.log(`✅ Frontend: Movie state should be set to:`, movieData.title);
     } catch (error) {
-      console.error('Failed to load movie:', error);
+      console.error('❌ Frontend: Failed to load movie:', error);
       setError('Movie could not be loaded.');
     } finally {
       setIsLoading(false);
@@ -40,11 +45,22 @@ const Watch: React.FC = () => {
   };
 
   const toggleFullscreen = async () => {
-    if (!videoRef.current) return;
+    if (!movie) return;
 
     try {
       if (!document.fullscreenElement) {
-        await videoRef.current.requestFullscreen();
+        // For Google Drive, make the whole container fullscreen
+        if (movie.source === 'gdrive') {
+          const container = document.querySelector('.relative.w-full.h-screen.bg-black');
+          if (container) {
+            await (container as HTMLElement).requestFullscreen();
+          }
+        } else {
+          // For local videos, make the video element fullscreen
+          if (videoRef.current) {
+            await videoRef.current.requestFullscreen();
+          }
+        }
       } else {
         await document.exitFullscreen();
       }
@@ -70,6 +86,7 @@ const Watch: React.FC = () => {
   }
 
   if (error || !movie) {
+    console.log(`🚨 Frontend: Showing error screen. Error: ${error}, Movie: ${movie ? 'exists' : 'null'}`);
     return (
       <div className="min-h-screen bg-netflix-black flex items-center justify-center">
         <div className="text-center animate-fade-in">
@@ -91,6 +108,9 @@ const Watch: React.FC = () => {
     );
   }
 
+  // At this point, movie is guaranteed to be non-null due to the check above
+  const currentMovie = movie as Movie;
+
   return (
     <div className="min-h-screen bg-netflix-black relative">
       {/* Header - hidden in fullscreen */}
@@ -111,7 +131,7 @@ const Watch: React.FC = () => {
             
             <div className="flex items-center space-x-4">
               <h1 className="text-xl font-semibold text-white truncate max-w-md">
-                {movie.title}
+                {currentMovie.title}
               </h1>
               <button
                 onClick={toggleFullscreen}
@@ -128,26 +148,53 @@ const Watch: React.FC = () => {
 
       {/* Video Player */}
       <div className="relative w-full h-screen bg-black">
-        <video
-          ref={videoRef}
-          controls
-          autoPlay
-          className="w-full h-full object-contain"
-          onError={() => setError('Error playing the video.')}
-          style={{
-            filter: 'contrast(1.1) brightness(1.05)'
-          }}
-        >
-          <source
-            src={`http://localhost:3000${movie.url}`}
-            type={movie.filename.endsWith('.mp4') ? 'video/mp4' : 
-                  movie.filename.endsWith('.mkv') ? 'video/x-matroska' : 
-                  'video/avi'}
+        {currentMovie.source === 'gdrive' ? (
+          // Google Drive iframe player
+          <iframe
+            src={currentMovie.url}
+            className="w-full h-full"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            style={{
+              border: 'none',
+              filter: 'contrast(1.1) brightness(1.05)'
+            }}
+            onLoad={() => console.log('✅ Google Drive iframe loaded')}
+            onError={() => {
+              console.error('❌ Google Drive iframe error');
+              setError('Error loading Google Drive video.');
+            }}
           />
-          <p className="text-white">
-            Your browser does not support the video element.
-          </p>
-        </video>
+        ) : (
+          // Local video player
+          <video
+            ref={videoRef}
+            controls
+            autoPlay
+            className="w-full h-full object-contain"
+            onError={(e) => {
+              console.error('❌ Video player error:', e);
+              console.error('❌ Video source:', `http://localhost:3000${currentMovie.url}`);
+              console.error('❌ Movie object:', currentMovie);
+              setError('Error playing the video.');
+            }}
+            onLoadStart={() => console.log('🎬 Video load started')}
+            onCanPlay={() => console.log('✅ Video can play')}
+            style={{
+              filter: 'contrast(1.1) brightness(1.05)'
+            }}
+          >
+            <source
+              src={`http://localhost:3000${currentMovie.url}`}
+              type={currentMovie.filename?.endsWith('.mp4') ? 'video/mp4' : 
+                    currentMovie.filename?.endsWith('.mkv') ? 'video/x-matroska' : 
+                    'video/avi'}
+            />
+            <p className="text-white">
+              Your browser does not support the video element.
+            </p>
+          </video>
+        )}
 
         {/* Custom fullscreen exit button */}
         {isFullscreen && (
@@ -170,29 +217,47 @@ const Watch: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between">
               <div className="mb-6 lg:mb-0">
-                <h2 className="text-4xl font-bold text-white mb-4">{movie.title}</h2>
+                <h2 className="text-4xl font-bold text-white mb-4">{currentMovie.title}</h2>
                 <div className="text-gray-300 space-y-2 mb-6">
                   <div className="flex items-center space-x-4 text-sm">
-                    <span className="flex items-center">
-                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                      </svg>
-                      {movie.filename}
-                    </span>
-                    {movie.size && (
+                    {currentMovie.source === 'local' && currentMovie.filename && (
+                      <span className="flex items-center">
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                        {currentMovie.filename}
+                      </span>
+                    )}
+                    {currentMovie.source === 'gdrive' && (
+                      <span className="flex items-center">
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                        </svg>
+                        Google Drive
+                      </span>
+                    )}
+                    {currentMovie.quality && (
+                      <span className="flex items-center">
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                        {currentMovie.quality}
+                      </span>
+                    )}
+                    {currentMovie.size && (
                       <span className="flex items-center">
                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                         </svg>
-                        {formatFileSize(movie.size)}
+                        {formatFileSize(currentMovie.size)}
                       </span>
                     )}
-                    {movie.modified && (
+                    {currentMovie.modified && (
                       <span className="flex items-center">
                         <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                         </svg>
-                        {new Date(movie.modified).toLocaleDateString('en-US')}
+                        {new Date(currentMovie.modified).toLocaleDateString('en-US')}
                       </span>
                     )}
                   </div>
