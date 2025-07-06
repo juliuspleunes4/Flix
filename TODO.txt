@@ -1,0 +1,6 @@
+-Navbar jumpt beetje als ik switch tussen de opties
+-MovieCards bij Home en Movies uitlijnen
+
+Voor later:
+-Movies van een NAS of iets dergelijks halen
+-Subtitles toevoegen
