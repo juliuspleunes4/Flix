@@ -75,12 +75,6 @@ const NavBar: React.FC<NavBarProps> = ({
               >
                 Movies
               </Link>
-              <a href="#" className="text-gray-400 hover:text-gray-300 transition-colors font-medium text-base relative group" style={{ color: '#9CA3AF', fontWeight: '500', textDecoration: 'none' }}>
-                Recently Added
-              </a>
-              <a href="#" className="text-gray-400 hover:text-gray-300 transition-colors font-medium text-base relative group" style={{ color: '#9CA3AF', fontWeight: '500', textDecoration: 'none' }}>
-                My List
-              </a>
             </nav>
           </div>
 
@@ -107,29 +101,7 @@ const NavBar: React.FC<NavBarProps> = ({
               </div>
             )}
 
-            {/* Notifications */}
-            <button className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-netflix-gray/30 relative" style={{ 
-              color: '#D1D5DB', 
-              background: 'none', 
-              border: 'none', 
-              padding: '0.5rem',
-              borderRadius: '50%',
-              position: 'relative',
-              cursor: 'pointer'
-            }}>
-              <svg className="w-6 h-6" width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-              </svg>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-netflix-red rounded-full" style={{
-                position: 'absolute',
-                top: '0.25rem',
-                right: '0.25rem',
-                width: '0.5rem',
-                height: '0.5rem',
-                backgroundColor: '#E50914',
-                borderRadius: '50%'
-              }}></span>
-            </button>
+
 
             {/* User Avatar and Menu */}
             <div className="flex items-center space-x-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
