@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Video.js custom styles */
+@import '~video.js/dist/video-js.css';
+
+body {
+  margin: 0;
+  font-family: 'Netflix Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #141414;
+  color: white;
+}
+
+/* Custom video player styling */
+.video-js {
+  width: 100%;
+  height: 100%;
+}
+
+.video-js .vjs-big-play-button {
+  background-color: rgba(229, 9, 20, 0.8);
+  border: none;
+  border-radius: 50%;
+}
+
+.video-js .vjs-control-bar {
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+}
+
+/* Loading spinner */
+.spinner {
+  border: 4px solid #333;
+  border-top: 4px solid #E50914;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
