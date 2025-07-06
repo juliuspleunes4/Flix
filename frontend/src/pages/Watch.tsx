@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { apiClient, type Movie } from '../utils/api';
+import { apiClient, type Movie, formatFileSize } from '../utils/api';
 
 const Watch: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -123,8 +123,10 @@ const Watch: React.FC = () => {
           onError={() => setError('Fout bij het afspelen van de video.')}
         >
           <source
-            src={`http://localhost:3001${movie.url}`}
-            type="video/mp4"
+            src={`http://localhost:3000${movie.url}`}
+            type={movie.filename.endsWith('.mp4') ? 'video/mp4' : 
+                  movie.filename.endsWith('.mkv') ? 'video/x-matroska' : 
+                  'video/avi'}
           />
           <p className="text-white">
             Je browser ondersteunt het video element niet.
@@ -149,9 +151,15 @@ const Watch: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-white mb-2">{movie.title}</h2>
-            <p className="text-gray-300 mb-4">
-              Bestandsnaam: {movie.filename}
-            </p>
+            <div className="text-gray-300 mb-4 space-y-1">
+              <p>Bestandsnaam: {movie.filename}</p>
+              {movie.size && (
+                <p>Bestandsgrootte: {formatFileSize(movie.size)}</p>
+              )}
+              {movie.modified && (
+                <p>Gewijzigd: {new Date(movie.modified).toLocaleDateString('nl-NL')}</p>
+              )}
+            </div>
             <div className="flex space-x-4">
               <button
                 onClick={toggleFullscreen}

@@ -1,10 +1,12 @@
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'http://localhost:3000';
 
 export interface Movie {
   id: number;
   title: string;
   filename: string;
   url: string;
+  size?: number;
+  modified?: string;
   thumbnail?: string;
 }
 
@@ -46,6 +48,26 @@ class ApiClient {
   async healthCheck(): Promise<{ status: string; timestamp: string; version: string }> {
     return this.request('/api/health');
   }
+
+  async getStats(): Promise<{
+    movieCount: number;
+    totalSize: number;
+    totalSizeFormatted: string;
+    moviesDir: string;
+    serverUptime: number;
+    timestamp: string;
+  }> {
+    return this.request('/api/stats');
+  }
+}
+
+// Helper function to format file sizes
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 export const apiClient = new ApiClient();

@@ -5,7 +5,7 @@ interface AuthState {
   isLoading: boolean;
 }
 
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'http://localhost:3000';
 
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { apiClient, type Movie } from '../utils/api';
+import { apiClient, type Movie, formatFileSize } from '../utils/api';
 
 const Home: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -118,9 +118,14 @@ const Home: React.FC = () => {
                   </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3">
-                  <h3 className="text-white text-sm font-medium truncate">
+                  <h3 className="text-white text-sm font-medium truncate mb-1">
                     {movie.title}
                   </h3>
+                  {movie.size && (
+                    <p className="text-gray-400 text-xs">
+                      {formatFileSize(movie.size)}
+                    </p>
+                  )}
                 </div>
               </Link>
             ))}
