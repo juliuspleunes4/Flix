@@ -13,7 +13,7 @@ const Watch: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      loadMovie(parseInt(id));
+      loadMovie(id); // Changed from parseInt(id) to just id
     }
   }, [id]);
 
@@ -26,7 +26,7 @@ const Watch: React.FC = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const loadMovie = async (movieId: number) => {
+  const loadMovie = async (movieId: string) => { // Changed from number to string
     try {
       setIsLoading(true);
       const movieData = await apiClient.getMovie(movieId);

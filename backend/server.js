@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const fs = require('fs');
+const { googleDriveMovies } = require('./movies.config');
 require('dotenv').config();
 
 const app = express();
@@ -59,83 +60,126 @@ app.get('/api/auth/check', requireAuth, (req, res) => {
   res.json({ authenticated: true });
 });
 
-// Get list of movies
+// Get list of movies (hybrid: local + Google Drive)
 app.get('/api/movies', requireAuth, (req, res) => {
   const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
   
   try {
-    if (!fs.existsSync(moviesDir)) {
-      console.log('Movies directory does not exist, creating it...');
-      fs.mkdirSync(moviesDir, { recursive: true });
-      return res.json([]);
+    let localMovies = [];
+    
+    // Get local movies
+    if (fs.existsSync(moviesDir)) {
+      const files = fs.readdirSync(moviesDir);
+      const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+      localMovies = files
+        .filter(file => {
+          const ext = path.extname(file).toLowerCase();
+          return supportedFormats.includes(ext);
+        })
+        .map((file, index) => {
+          const name = path.parse(file).name;
+          const stats = fs.statSync(path.join(moviesDir, file));
+          return {
+            id: `local_${index + 1}`,
+            title: name.replace(/[._-]/g, ' ').trim(),
+            filename: file,
+            url: `/movies/${encodeURIComponent(file)}`,
+            source: 'local',
+            size: stats.size,
+            modified: stats.mtime.toISOString(),
+            thumbnail: `/api/thumbnail/local_${index + 1}`,
+            quality: 'Unknown',
+            duration: 'Unknown',
+            year: new Date(stats.mtime).getFullYear(),
+            genre: ['Unknown'],
+            rating: 'Not Rated',
+            description: `Local movie: ${name}`
+          };
+        });
     }
 
-    const files = fs.readdirSync(moviesDir);
-    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
-    const movies = files
-      .filter(file => {
-        const ext = path.extname(file).toLowerCase();
-        return supportedFormats.includes(ext);
-      })
-      .map((file, index) => {
-        const name = path.parse(file).name;
-        const stats = fs.statSync(path.join(moviesDir, file));
-        return {
-          id: index + 1,
-          title: name.replace(/[._-]/g, ' ').trim(),
-          filename: file,
-          url: `/movies/${encodeURIComponent(file)}`,
-          size: stats.size,
-          modified: stats.mtime.toISOString(),
-          thumbnail: `/api/thumbnail/${index + 1}` // Placeholder for future thumbnail support
-        };
-      });
+    // Combine local movies with Google Drive movies
+    const allMovies = [
+      ...localMovies,
+      ...googleDriveMovies.map(movie => ({
+        ...movie,
+        modified: new Date().toISOString() // Use current time for Google Drive movies
+      }))
+    ];
     
-    console.log(`Found ${movies.length} movies in ${moviesDir}`);
-    res.json(movies);
+    console.log(`Found ${localMovies.length} local movies and ${googleDriveMovies.length} Google Drive movies`);
+    console.log(`Total: ${allMovies.length} movies available`);
+    
+    res.json(allMovies);
   } catch (error) {
-    console.error('Error reading movies directory:', error);
-    res.status(500).json({ error: 'Unable to read movies directory', details: error.message });
+    console.error('Error reading movies:', error);
+    res.status(500).json({ error: 'Unable to read movies', details: error.message });
   }
 });
 
-// Get movie by ID
+// Get movie by ID (hybrid: local + Google Drive)
 app.get('/api/movies/:id', requireAuth, (req, res) => {
-  const movieId = parseInt(req.params.id);
+  const movieId = req.params.id;
   const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
   
   try {
-    if (!fs.existsSync(moviesDir)) {
-      return res.status(404).json({ error: 'Movies directory not found' });
+    // Check if it's a Google Drive movie
+    if (movieId.startsWith('gdrive_')) {
+      const gdriveMovie = googleDriveMovies.find(movie => movie.id === movieId);
+      if (gdriveMovie) {
+        res.json({
+          ...gdriveMovie,
+          modified: new Date().toISOString()
+        });
+        return;
+      }
     }
-
-    const files = fs.readdirSync(moviesDir);
-    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
-    const videoFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return supportedFormats.includes(ext);
-    });
     
-    if (movieId > 0 && movieId <= videoFiles.length) {
-      const file = videoFiles[movieId - 1];
-      const filePath = path.join(moviesDir, file);
-      const stats = fs.statSync(filePath);
+    // Check if it's a local movie
+    if (movieId.startsWith('local_')) {
+      const localIndex = parseInt(movieId.replace('local_', '')) - 1;
       
-      const movie = {
-        id: movieId,
-        title: path.parse(file).name.replace(/[._-]/g, ' ').trim(),
-        filename: file,
-        url: `/movies/${encodeURIComponent(file)}`,
-        size: stats.size,
-        modified: stats.mtime.toISOString()
-      };
-      res.json(movie);
-    } else {
-      res.status(404).json({ error: 'Movie not found' });
+      if (!fs.existsSync(moviesDir)) {
+        return res.status(404).json({ error: 'Movies directory not found' });
+      }
+
+      const files = fs.readdirSync(moviesDir);
+      const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+      const videoFiles = files.filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return supportedFormats.includes(ext);
+      });
+      
+      if (localIndex >= 0 && localIndex < videoFiles.length) {
+        const file = videoFiles[localIndex];
+        const filePath = path.join(moviesDir, file);
+        const stats = fs.statSync(filePath);
+        
+        const movie = {
+          id: movieId,
+          title: path.parse(file).name.replace(/[._-]/g, ' ').trim(),
+          filename: file,
+          url: `/movies/${encodeURIComponent(file)}`,
+          source: 'local',
+          size: stats.size,
+          modified: stats.mtime.toISOString(),
+          quality: 'Unknown',
+          duration: 'Unknown',
+          year: new Date(stats.mtime).getFullYear(),
+          genre: ['Unknown'],
+          rating: 'Not Rated',
+          description: `Local movie: ${path.parse(file).name}`
+        };
+        res.json(movie);
+        return;
+      }
     }
+    
+    // Movie not found
+    res.status(404).json({ error: 'Movie not found' });
   } catch (error) {
-    console.error('Error reading movies directory:', error);
-    res.status(500).json({ error: 'Unable to read movies directory', details: error.message });
+    console.error('Error getting movie:', error);
+    res.status(500).json({ error: 'Unable to get movie', details: error.message });
   }
 });
 
@@ -150,14 +194,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Server stats endpoint
+// Server stats endpoint (hybrid: local + Google Drive)
 app.get('/api/stats', requireAuth, (req, res) => {
   const moviesDir = path.join(__dirname, process.env.MOVIES_DIR || './public/movies');
   
   try {
-    let movieCount = 0;
-    let totalSize = 0;
+    let localMovieCount = 0;
+    let localTotalSize = 0;
     
+    // Count local movies
     if (fs.existsSync(moviesDir)) {
       const files = fs.readdirSync(moviesDir);
       const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
@@ -165,20 +210,45 @@ app.get('/api/stats', requireAuth, (req, res) => {
       files.forEach(file => {
         const ext = path.extname(file).toLowerCase();
         if (supportedFormats.includes(ext)) {
-          movieCount++;
+          localMovieCount++;
           const stats = fs.statSync(path.join(moviesDir, file));
-          totalSize += stats.size;
+          localTotalSize += stats.size;
         }
       });
     }
     
+    // Count Google Drive movies
+    const gdriveMovieCount = googleDriveMovies.length;
+    const gdriveTotalSize = googleDriveMovies.reduce((total, movie) => total + (movie.size || 0), 0);
+    
+    const totalMovieCount = localMovieCount + gdriveMovieCount;
+    const totalSize = localTotalSize + gdriveTotalSize;
+    
     res.json({
-      movieCount,
+      totalMovieCount,
+      localMovieCount,
+      gdriveMovieCount,
       totalSize,
+      localTotalSize,
+      gdriveTotalSize,
       totalSizeFormatted: formatBytes(totalSize),
+      localSizeFormatted: formatBytes(localTotalSize),
+      gdriveSizeFormatted: formatBytes(gdriveTotalSize),
       moviesDir,
       serverUptime: process.uptime(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      sources: {
+        local: {
+          count: localMovieCount,
+          size: localTotalSize,
+          sizeFormatted: formatBytes(localTotalSize)
+        },
+        gdrive: {
+          count: gdriveMovieCount,
+          size: gdriveTotalSize,
+          sizeFormatted: formatBytes(gdriveTotalSize)
+        }
+      }
     });
   } catch (error) {
     console.error('Error getting server stats:', error);
@@ -186,7 +256,74 @@ app.get('/api/stats', requireAuth, (req, res) => {
   }
 });
 
-// Helper function to format bytes
+// Add or update Google Drive movie (admin endpoint)
+app.post('/api/admin/gdrive-movies', requireAuth, (req, res) => {
+  try {
+    const { title, url, description, year, genre, duration, rating, quality, thumbnail } = req.body;
+    
+    if (!title || !url) {
+      return res.status(400).json({ error: 'Title and URL are required' });
+    }
+    
+    // Generate a unique ID
+    const existingIds = googleDriveMovies.map(m => m.id);
+    let newId = 1;
+    while (existingIds.includes(`gdrive_${newId}`)) {
+      newId++;
+    }
+    
+    const newMovie = {
+      id: `gdrive_${newId}`,
+      title,
+      description: description || `Google Drive movie: ${title}`,
+      year: year || new Date().getFullYear(),
+      genre: genre || ['Unknown'],
+      duration: duration || 'Unknown',
+      rating: rating || 'Not Rated',
+      thumbnail: thumbnail || 'https://via.placeholder.com/300x450?text=' + encodeURIComponent(title),
+      url,
+      source: 'gdrive',
+      size: 0, // Will be updated manually if needed
+      quality: quality || 'Unknown'
+    };
+    
+    googleDriveMovies.push(newMovie);
+    
+    // Note: In a production environment, you'd want to persist this to a database
+    // For now, this will only persist until server restart
+    console.log(`Added new Google Drive movie: ${title}`);
+    
+    res.json({ success: true, movie: newMovie });
+  } catch (error) {
+    console.error('Error adding Google Drive movie:', error);
+    res.status(500).json({ error: 'Failed to add movie' });
+  }
+});
+
+// Get Google Drive movies only (admin endpoint)
+app.get('/api/admin/gdrive-movies', requireAuth, (req, res) => {
+  res.json(googleDriveMovies);
+});
+
+// Delete Google Drive movie (admin endpoint)
+app.delete('/api/admin/gdrive-movies/:id', requireAuth, (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const index = googleDriveMovies.findIndex(movie => movie.id === movieId);
+    
+    if (index === -1) {
+      return res.status(404).json({ error: 'Movie not found' });
+    }
+    
+    const deletedMovie = googleDriveMovies.splice(index, 1)[0];
+    console.log(`Deleted Google Drive movie: ${deletedMovie.title}`);
+    
+    res.json({ success: true, deletedMovie });
+  } catch (error) {
+    console.error('Error deleting Google Drive movie:', error);
+    res.status(500).json({ error: 'Failed to delete movie' });
+  }
+});
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
