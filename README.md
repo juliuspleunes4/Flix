@@ -133,4 +133,4 @@ movies/
 - **Michiel** – Backend, media-opslag, streaming, hosting
 
 📜 Licentie
-🔒 Dit project is uitsluitend bedoeld voor privégebruik. Distributie van auteursrechtelijk beschermd materiaal buiten je huishouden is in strijd met de wetgeving.
+- 🔒 Dit project is uitsluitend bedoeld voor privégebruik. Distributie van auteursrechtelijk beschermd materiaal buiten je huishouden is in strijd met de wetgeving.
