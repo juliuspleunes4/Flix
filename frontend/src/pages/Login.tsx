@@ -53,16 +53,17 @@ const Login: React.FC = () => {
           <div className="flex justify-between items-center py-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0' }}>
             {/* Logo */}
             <div className="flex items-center" style={{ display: 'flex', alignItems: 'center' }}>
-              <h1 className="text-4xl font-black text-netflix-red tracking-tight cursor-pointer hover:scale-105 transition-transform duration-200" style={{ 
-                fontSize: '2.25rem', 
-                fontWeight: '900', 
-                color: '#E50914', 
-                letterSpacing: '-0.025em', 
-                cursor: 'pointer',
-                transition: 'transform 0.2s'
-              }}>
-                FLIX
-              </h1>
+              <img 
+                src="/src/assets/logo_flix.png" 
+                alt="FLIX" 
+                className="h-9 cursor-pointer hover:scale-105 transition-transform duration-200"
+                style={{
+                  height: '2.25rem',
+                  width: 'auto',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s'
+                }}
+              />
             </div>
 
             {/* Login Status Indicator */}
