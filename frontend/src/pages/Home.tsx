@@ -95,7 +95,7 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
           {/* Clean Hero Section */}
-          <section id="hero" className="mb-16" style={{ marginBottom: '4rem' }}>
+          <section id="hero" className="mb-8" style={{ marginBottom: '2rem' }}>
             <div className="py-12" style={{ padding: '3rem 0' }}>
               <h2 id="library" className="text-5xl md:text-6xl font-bold text-white mb-4" style={{
                 fontSize: '3rem',
