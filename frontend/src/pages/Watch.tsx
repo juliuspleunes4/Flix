@@ -272,7 +272,7 @@ const Watch: React.FC = () => {
             </h1>
             {/* Description */}
             {currentMovie.description && currentMovie.description !== `Local movie: ${currentMovie.title.replace(/\s+/g, ' ')}` && (
-              <p className="text-gray-300 leading-relaxed text-sm lg:text-base">
+              <p className="text-gray-300 leading-relaxed text-sm lg:text-base break-words" style={{ maxWidth: '64rem' }}>
                 {currentMovie.description}
               </p>
             )}
