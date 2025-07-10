@@ -256,14 +256,12 @@ const NavBar: React.FC<NavBarProps> = ({
         <div className="fixed bg-netflix-gray-dark p-6 rounded-lg max-w-md w-full mx-4 shadow-2xl" style={{
           position: 'fixed',
           top: '5.5rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
+          right: '1rem',
           backgroundColor: '#1a1a1a',
           padding: '1.5rem',
           borderRadius: '0.5rem',
           maxWidth: '28rem',
-          width: '100%',
-          margin: '0 1rem',
+          width: '28rem',
           zIndex: 60,
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)'
         }}>
