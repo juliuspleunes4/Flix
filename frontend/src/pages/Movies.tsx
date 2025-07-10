@@ -12,7 +12,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [sortBy, setSortBy] = useState<'title' | 'size' | 'date'>('title');
+  const [sortBy, setSortBy] = useState<'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc'>('title-asc');
 
   useEffect(() => {
     loadMovies();
@@ -37,12 +37,14 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
 
   const sortedMovies = [...filteredMovies].sort((a, b) => {
     switch (sortBy) {
-      case 'title':
+      case 'title-asc':
         return a.title.localeCompare(b.title);
-      case 'size':
-        return (b.size || 0) - (a.size || 0);
-      case 'date':
-        return new Date(b.modified || 0).getTime() - new Date(a.modified || 0).getTime();
+      case 'title-desc':
+        return b.title.localeCompare(a.title);
+      case 'rating-desc':
+        return (b.stars || 3.5) - (a.stars || 3.5);
+      case 'rating-asc':
+        return (a.stars || 3.5) - (b.stars || 3.5);
       default:
         return 0;
     }
@@ -140,7 +142,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
                 </label>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'title' | 'size' | 'date')}
+                  onChange={(e) => setSortBy(e.target.value as 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc')}
                   className="bg-netflix-gray-dark border border-netflix-gray text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-netflix-red transition-all duration-200"
                   style={{
                     backgroundColor: '#222222',
@@ -150,9 +152,10 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
                     borderRadius: '0.375rem'
                   }}
                 >
-                  <option value="title">Title A-Z</option>
-                  <option value="size">File Size</option>
-                  <option value="date">Date Added</option>
+                  <option value="title-asc">Title A-Z</option>
+                  <option value="title-desc">Title Z-A</option>
+                  <option value="rating-desc">Rating (High to Low)</option>
+                  <option value="rating-asc">Rating (Low to High)</option>
                 </select>
               </div>
             </div>
