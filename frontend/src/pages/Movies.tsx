@@ -169,7 +169,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
 
           {/* Movies Grid */}
           {sortedMovies.length === 0 ? (
-            <div className="text-center py-32 animate-fade-in" style={{ textAlign: 'center', padding: '8rem 0' }}>
+            <div className="py-4 animate-fade-in" style={{ padding: '1rem 0' }}>
               <div className="mb-8" style={{ marginBottom: '2rem' }}>
                 <div className="text-6xl mb-6" style={{ fontSize: '4rem', marginBottom: '1.5rem', opacity: 0.6 }}>🎬</div>
               </div>
@@ -181,12 +181,11 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
               }}>
                 {searchQuery ? 'No movies found' : 'No movies available'}
               </h3>
-              <p className="text-gray-400 mb-12 text-xl max-w-2xl mx-auto leading-relaxed" style={{
+              <p className="text-gray-400 mb-12 text-xl max-w-2xl leading-relaxed" style={{
                 color: '#9CA3AF',
                 marginBottom: '3rem',
                 fontSize: '1.125rem',
                 maxWidth: '42rem',
-                margin: '0 auto 3rem auto',
                 lineHeight: '1.625'
               }}>
                 {searchQuery ? (
