@@ -5,9 +5,10 @@ import { apiClient, type Movie, formatFileSize } from '../utils/api';
 interface MoviesProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  refreshTrigger?: number;
 }
 
-const Movies: React.FC<MoviesProps> = ({ searchQuery }) => {
+const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -15,7 +16,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery }) => {
 
   useEffect(() => {
     loadMovies();
-  }, []);
+  }, [refreshTrigger]);
 
   const loadMovies = async () => {
     try {

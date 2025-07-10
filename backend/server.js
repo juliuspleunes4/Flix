@@ -30,6 +30,9 @@ const requireAuth = (req, res, next) => {
   }
 };
 
+// Static files for custom movies
+app.use('/custom-movies', requireAuth, express.static('/'));
+
 // Helper function to get proper MIME type for video files
 function getVideoMimeType(extension) {
   const mimeTypes = {
@@ -51,35 +54,108 @@ app.get('/api/stream/:id', requireAuth, (req, res) => {
   console.log(`🎬 Streaming request for movie ID: ${movieId}`);
   
   try {
-    // Only handle local movies for streaming (Google Drive uses iframe)
-    if (!movieId.startsWith('local_')) {
-      return res.status(400).json({ error: 'Streaming only available for local movies' });
-    }
-    
-    const localIndex = parseInt(movieId.replace('local_', '')) - 1;
-    
-    if (!fs.existsSync(moviesDir)) {
-      return res.status(404).json({ error: 'Movies directory not found' });
-    }
+    // Handle both local and custom movies for streaming
+    if (movieId.startsWith('local_')) {
+      // Process local movies
+      const localIndex = parseInt(movieId.replace('local_', '')) - 1;
+      
+      if (!fs.existsSync(moviesDir)) {
+        return res.status(404).json({ error: 'Movies directory not found' });
+      }
 
-    const files = fs.readdirSync(moviesDir);
-    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
-    const videoFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return supportedFormats.includes(ext);
-    });
+      const files = fs.readdirSync(moviesDir);
+      const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+      const videoFiles = files.filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return supportedFormats.includes(ext);
+      });
+      
+      if (localIndex < 0 || localIndex >= videoFiles.length) {
+        return res.status(404).json({ error: 'Movie not found' });
+      }
+      
+      const file = videoFiles[localIndex];
+      const filePath = path.join(moviesDir, file);
+      const stat = fs.statSync(filePath);
+      const fileSize = stat.size;
+      const range = req.headers.range;
+      
+      console.log(`📹 Streaming file: ${file}, Size: ${fileSize} bytes`);
+      
+      if (range) {
+        // Parse range header
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunksize = (end - start) + 1;
+        
+        console.log(`📊 Range request: ${start}-${end}/${fileSize}`);
+        
+        // Create read stream for the requested range
+        const file_stream = fs.createReadStream(filePath, { start, end });
+        
+        // Set appropriate headers for range request
+        const head = {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize,
+          'Content-Type': getVideoMimeType(path.extname(file).toLowerCase()),
+          'Cache-Control': 'no-cache'
+        };
+        
+        res.writeHead(206, head);
+        file_stream.pipe(res);
+      } else {
+        // No range header, send entire file
+        console.log(`📹 Sending entire file: ${file}`);
+        
+        const head = {
+          'Content-Length': fileSize,
+          'Content-Type': getVideoMimeType(path.extname(file).toLowerCase()),
+          'Accept-Ranges': 'bytes',
+          'Cache-Control': 'no-cache'
+        };
+        
+        res.writeHead(200, head);
+        fs.createReadStream(filePath).pipe(res);
+      }
+    } else if (movieId.startsWith('custom_')) {
+      // Redirect to custom streaming endpoint
+      const customId = movieId.replace('custom_', '');
+      return res.redirect(`/api/stream/custom/${customId}`);
+    } else {
+      return res.status(400).json({ error: 'Streaming only available for local and custom movies' });
+    }
+  } catch (error) {
+    console.error('Error streaming video:', error);
+    res.status(500).json({ error: 'Unable to stream video', details: error.message });
+  }
+});
+
+// Custom movie streaming endpoint
+app.get('/api/stream/custom/:id', requireAuth, (req, res) => {
+  const movieId = `custom_${req.params.id}`;
+  
+  console.log(`🎬 Custom streaming request for movie ID: ${movieId}`);
+  
+  try {
+    const customMovie = customMovies.find(movie => movie.id === movieId);
     
-    if (localIndex < 0 || localIndex >= videoFiles.length) {
-      return res.status(404).json({ error: 'Movie not found' });
+    if (!customMovie) {
+      return res.status(404).json({ error: 'Custom movie not found' });
     }
     
-    const file = videoFiles[localIndex];
-    const filePath = path.join(moviesDir, file);
-    const stat = fs.statSync(filePath);
+    const moviePath = path.join(customMovie.customPath, customMovie.filename);
+    
+    if (!fs.existsSync(moviePath)) {
+      return res.status(404).json({ error: 'Movie file not found' });
+    }
+    
+    const stat = fs.statSync(moviePath);
     const fileSize = stat.size;
     const range = req.headers.range;
     
-    console.log(`📹 Streaming file: ${file}, Size: ${fileSize} bytes`);
+    console.log(`📹 Streaming custom file: ${customMovie.filename}, Size: ${fileSize} bytes`);
     
     if (range) {
       // Parse range header
@@ -91,14 +167,14 @@ app.get('/api/stream/:id', requireAuth, (req, res) => {
       console.log(`📊 Range request: ${start}-${end}/${fileSize}`);
       
       // Create read stream for the requested range
-      const file_stream = fs.createReadStream(filePath, { start, end });
+      const file_stream = fs.createReadStream(moviePath, { start, end });
       
       // Set appropriate headers for range request
       const head = {
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
         'Accept-Ranges': 'bytes',
         'Content-Length': chunksize,
-        'Content-Type': getVideoMimeType(path.extname(file).toLowerCase()),
+        'Content-Type': getVideoMimeType(path.extname(customMovie.filename).toLowerCase()),
         'Cache-Control': 'no-cache'
       };
       
@@ -106,21 +182,21 @@ app.get('/api/stream/:id', requireAuth, (req, res) => {
       file_stream.pipe(res);
     } else {
       // No range header, send entire file
-      console.log(`📹 Sending entire file: ${file}`);
+      console.log(`📹 Sending entire custom file: ${customMovie.filename}`);
       
       const head = {
         'Content-Length': fileSize,
-        'Content-Type': getVideoMimeType(path.extname(file).toLowerCase()),
+        'Content-Type': getVideoMimeType(path.extname(customMovie.filename).toLowerCase()),
         'Accept-Ranges': 'bytes',
         'Cache-Control': 'no-cache'
       };
       
       res.writeHead(200, head);
-      fs.createReadStream(filePath).pipe(res);
+      fs.createReadStream(moviePath).pipe(res);
     }
   } catch (error) {
-    console.error('Error streaming video:', error);
-    res.status(500).json({ error: 'Unable to stream video', details: error.message });
+    console.error('Error streaming custom video:', error);
+    res.status(500).json({ error: 'Unable to stream custom video', details: error.message });
   }
 });
 
@@ -193,16 +269,17 @@ app.get('/api/movies', requireAuth, (req, res) => {
         });
     }
 
-    // Combine local movies with Google Drive movies
+    // Combine local movies with Google Drive movies and custom movies
     const allMovies = [
       ...localMovies,
       ...googleDriveMovies.map(movie => ({
         ...movie,
         modified: new Date().toISOString() // Use current time for Google Drive movies
-      }))
+      })),
+      ...customMovies
     ];
     
-    console.log(`Found ${localMovies.length} local movies and ${googleDriveMovies.length} Google Drive movies`);
+    console.log(`Found ${localMovies.length} local movies, ${googleDriveMovies.length} Google Drive movies, and ${customMovies.length} custom movies`);
     console.log(`Total: ${allMovies.length} movies available`);
     
     res.json(allMovies);
@@ -284,6 +361,20 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
       }
     }
     
+    // Check if it's a custom movie
+    if (movieId.startsWith('custom_')) {
+      console.log(`🎬 Looking for custom movie: ${movieId}`);
+      const customMovie = customMovies.find(movie => movie.id === movieId);
+      if (customMovie) {
+        console.log(`✅ Found custom movie: ${customMovie.title}`);
+        res.json(customMovie);
+        return;
+      } else {
+        console.log(`❌ Custom movie not found: ${movieId}`);
+        console.log(`Available custom movies:`, customMovies.map(m => m.id));
+      }
+    }
+
     // Movie not found
     console.log(`❌ Movie not found: ${movieId}`);
     res.status(404).json({ error: 'Movie not found' });
@@ -434,6 +525,128 @@ app.delete('/api/admin/gdrive-movies/:id', requireAuth, (req, res) => {
     res.status(500).json({ error: 'Failed to delete movie' });
   }
 });
+
+// Store custom movies
+let customMovies = [];
+
+// Helper function to scan custom path for movies
+async function scanCustomPath(customPath) {
+  const movies = [];
+  
+  try {
+    console.log(`🔍 Scanning custom path: ${customPath}`);
+    
+    if (!fs.existsSync(customPath)) {
+      throw new Error('Custom path does not exist');
+    }
+    
+    const items = fs.readdirSync(customPath);
+    console.log(`📁 Found ${items.length} items in directory:`, items);
+    
+    const supportedFormats = ['.mp4', '.mkv', '.avi', '.mov', '.wmv'];
+    
+    for (const item of items) {
+      const itemPath = path.join(customPath, item);
+      const stats = fs.statSync(itemPath);
+      
+      console.log(`📂 Processing item: ${item}, isDirectory: ${stats.isDirectory()}`);
+      
+      if (stats.isDirectory()) {
+        // Check if this directory contains a movie file and source.txt
+        const dirContents = fs.readdirSync(itemPath);
+        console.log(`📄 Directory contents for ${item}:`, dirContents);
+        
+        const movieFile = dirContents.find(file => {
+          const ext = path.extname(file).toLowerCase();
+          return supportedFormats.includes(ext);
+        });
+        
+        // Look for source.txt (case-insensitive) or source.txt.txt (common Windows issue)
+        const sourceFile = dirContents.find(file => {
+          const fileName = file.toLowerCase();
+          return fileName === 'source.txt' || fileName === 'source.txt.txt';
+        });
+        
+        console.log(`🎬 Movie file found: ${movieFile}`);
+        console.log(`📝 Source file found: ${sourceFile}`);
+        
+        // Only include if both movie file and source.txt exist
+        if (movieFile && sourceFile) {
+          try {
+            const sourceContent = fs.readFileSync(path.join(itemPath, sourceFile), 'utf8');
+            console.log(`📖 Source content for ${item}:`, sourceContent);
+            const movieData = JSON.parse(sourceContent);
+            
+            const movieStats = fs.statSync(path.join(itemPath, movieFile));
+            
+            const movie = {
+              id: `custom_${Buffer.from(itemPath).toString('base64')}`,
+              title: movieData.title || path.parse(movieFile).name,
+              filename: movieFile,
+              url: `/custom-movies/${encodeURIComponent(path.relative(customPath, itemPath))}/${encodeURIComponent(movieFile)}`,
+              source: 'custom',
+              size: movieStats.size,
+              modified: movieStats.mtime.toISOString(),
+              thumbnail: movieData.thumbnail || `/api/thumbnail/custom_${Buffer.from(itemPath).toString('base64')}`,
+              description: movieData.description || `Custom movie: ${movieData.title || path.parse(movieFile).name}`,
+              year: movieData.year || new Date(movieStats.mtime).getFullYear(),
+              genre: movieData.genre || ['Unknown'],
+              duration: movieData.duration || 'Unknown',
+              rating: movieData.rating || 'Not Rated',
+              quality: movieData.quality || 'Unknown',
+              stars: movieData.stars || 3.5,
+              customPath: itemPath
+            };
+            
+            movies.push(movie);
+            console.log(`✅ Added movie: ${movie.title}`);
+          } catch (error) {
+            console.error(`❌ Error reading source.txt for ${item}:`, error);
+            // Skip this movie if source.txt is invalid
+          }
+        } else {
+          console.log(`⚠️ Skipping ${item} - missing movie file or source.txt`);
+        }
+      }
+    }
+    
+    console.log(`🎯 Total movies found: ${movies.length}`);
+    return movies;
+  } catch (error) {
+    console.error('❌ Error scanning custom path:', error);
+    throw error;
+  }
+}
+
+// Custom path scanning endpoint
+app.post('/api/custom-path', requireAuth, async (req, res) => {
+  try {
+    const { customPath } = req.body;
+    
+    if (!customPath) {
+      return res.status(400).json({ error: 'Custom path is required' });
+    }
+    
+    console.log(`📁 Scanning custom path: ${customPath}`);
+    
+    const movies = await scanCustomPath(customPath);
+    customMovies = movies;
+    
+    console.log(`✅ Found ${movies.length} movies in custom path`);
+    res.json({ success: true, movies, count: movies.length });
+  } catch (error) {
+    console.error('Error scanning custom path:', error);
+    res.status(500).json({ error: 'Failed to scan custom path', details: error.message });
+  }
+});
+
+// Clear custom movies
+app.delete('/api/custom-path', requireAuth, (req, res) => {
+  customMovies = [];
+  console.log('🗑️  Cleared custom movies');
+  res.json({ success: true, message: 'Custom movies cleared' });
+});
+
 function formatBytes(bytes, decimals = 2) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;

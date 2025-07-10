@@ -5,16 +5,17 @@ import { apiClient, type Movie, formatFileSize } from '../utils/api';
 interface HomeProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  refreshTrigger?: number;
 }
 
-const Home: React.FC<HomeProps> = ({ searchQuery }) => {
+const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     loadMovies();
-  }, []);
+  }, [refreshTrigger]);
 
   const loadMovies = async () => {
     try {

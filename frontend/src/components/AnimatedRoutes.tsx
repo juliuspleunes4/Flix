@@ -27,7 +27,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AnimatedRoutes: React.FC = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const isLoginPage = location.pathname === '/login';
+  
+  const handleMoviesUpdate = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
   
   return (
     <div className="min-h-screen bg-netflix-black text-white">
@@ -37,6 +42,7 @@ const AnimatedRoutes: React.FC = () => {
           searchQuery={searchQuery} 
           setSearchQuery={setSearchQuery}
           showSearch={location.pathname === '/home' || location.pathname === '/movies'}
+          onMoviesUpdate={handleMoviesUpdate}
         />
       )}
       
@@ -52,7 +58,7 @@ const AnimatedRoutes: React.FC = () => {
               path="/home"
               element={
                 <ProtectedRoute>
-                  <Home searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                  <Home searchQuery={searchQuery} setSearchQuery={setSearchQuery} refreshTrigger={refreshTrigger} />
                 </ProtectedRoute>
               }
             />
@@ -60,7 +66,7 @@ const AnimatedRoutes: React.FC = () => {
               path="/movies"
               element={
                 <ProtectedRoute>
-                  <Movies searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                  <Movies searchQuery={searchQuery} setSearchQuery={setSearchQuery} refreshTrigger={refreshTrigger} />
                 </ProtectedRoute>
               }
             />
