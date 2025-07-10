@@ -56,12 +56,13 @@ video::-webkit-media-controls {
 }
 
 video::-webkit-media-controls-panel {
-  background-color: rgba(0, 0, 0, 0.5); /* Minder donkere panel overlay */
+  background-color: rgba(0, 0, 0, 0.1); /* Minder donkere panel overlay */
 }
 
 video::-webkit-media-controls-play-button {
   background-color: #E50914;
   border-radius: 50%;
+  transform: scale(0.7);
 }
 
 /* Focus styles for accessibility */
