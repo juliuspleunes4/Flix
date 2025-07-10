@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { apiClient, type Movie, formatFileSize } from '../utils/api';
+import { apiClient, type Movie } from '../utils/api';
 import { addRecentMovie } from '../utils/recentMovies';
 
 const Watch: React.FC = () => {
@@ -157,8 +157,8 @@ const Watch: React.FC = () => {
       )}
 
       {/* Video Player */}
-      <div className="relative w-full h-screen bg-black flex items-center justify-center">
-        <div className="w-4/5 h-4/5 max-w-6xl max-h-screen aspect-video">
+      <div className="relative w-full bg-black flex flex-col items-start justify-start" style={{ paddingTop: '6rem', paddingLeft: '1rem' }}>
+        <div className="w-3/5 h-3/5 max-w-[72rem] max-h-[75vh] aspect-video">
           {currentMovie.source === 'gdrive' ? (
             // Google Drive iframe player
             <iframe
@@ -228,108 +228,69 @@ const Watch: React.FC = () => {
           )}
         </div>
 
-        {/* Custom fullscreen exit button */}
-        {isFullscreen && (
-          <div className="absolute top-6 right-6 z-30">
-            <button
-              onClick={toggleFullscreen}
-              className="w-12 h-12 rounded-full bg-black/70 hover:bg-netflix-red text-white hover:text-white transition-all duration-200 flex items-center justify-center shadow-lg"
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Movie Info Overlay - hidden in fullscreen */}
-      {!isFullscreen && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 lg:p-6">
-          <div className="space-y-4" style={{ marginLeft: '20px' }}>
-            
+        {/* Movie Info Overlay */}
+        <div className="w-full mt-6">
+          <div className="space-y-4">
             {/* Title */}
-            <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
+            <h1 className="text-lg lg:text-xl font-bold text-white leading-tight">
               {currentMovie.title}
             </h1>
-            
             {/* Description */}
             {currentMovie.description && currentMovie.description !== `Local movie: ${currentMovie.title.replace(/\s+/g, ' ')}` && (
               <p className="text-gray-300 leading-relaxed text-sm lg:text-base">
                 {currentMovie.description}
               </p>
             )}
-            
-            {/* Movie Details - Vertical Stack */}
+            {/* Movie Details */}
             <div>
               {currentMovie.year && (
-                <div className="flex items-center text-white text-base" style={{ marginBottom: '8px' }}>
-                  <svg style={{ width: '20px', height: '20px', marginRight: '12px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center text-white text-xs">
+                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                   </svg>
                   {currentMovie.year}
                 </div>
               )}
               {currentMovie.rating && currentMovie.rating !== 'Not Rated' && (
-                <div className="flex items-center text-gray-300 text-base" style={{ marginBottom: '8px' }}>
-                  <svg style={{ width: '20px', height: '20px', marginRight: '12px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center text-gray-300 text-xs">
+                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   {currentMovie.rating}
                 </div>
               )}
               {currentMovie.duration && currentMovie.duration !== 'Unknown' && (
-                <div className="flex items-center text-gray-300 text-base" style={{ marginBottom: '8px' }}>
-                  <svg style={{ width: '20px', height: '20px', marginRight: '12px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center text-gray-300 text-xs">
+                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
                   {currentMovie.duration}
                 </div>
               )}
               {currentMovie.quality && currentMovie.quality !== 'Unknown' && (
-                <div className="flex items-center text-gray-300 text-base" style={{ marginBottom: '8px' }}>
-                  <svg style={{ width: '20px', height: '20px', marginRight: '12px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center text-gray-300 text-xs">
+                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
                     <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
                   </svg>
                   {currentMovie.quality}
                 </div>
               )}
             </div>
-            
-            {/* Technical Details - Simple List */}
-            <div className="text-gray-300 text-sm">
-              <div className="flex items-center" style={{ marginBottom: '6px' }}>
-                <svg style={{ width: '18px', height: '18px', marginRight: '10px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-                </svg>
-                <span>{currentMovie.source === 'gdrive' ? 'Google Drive' : currentMovie.source === 'custom' ? 'Custom Path' : 'Local'}</span>
-              </div>
-              
-              {currentMovie.size && (
-                <div className="flex items-center" style={{ marginBottom: '6px' }}>
-                  <svg style={{ width: '18px', height: '18px', marginRight: '10px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                  <span>{formatFileSize(currentMovie.size)}</span>
-                </div>
-              )}
-              
-              {currentMovie.modified && (
-                <div className="flex items-center" style={{ marginBottom: '40px' }}>
-                  <svg style={{ width: '18px', height: '18px', marginRight: '10px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
-                  <span>
-                    {new Date(currentMovie.modified).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
-                </div>
-              )}
-            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Custom fullscreen exit button */}
+      {isFullscreen && (
+        <div className="absolute top-6 right-6 z-30">
+          <button
+            onClick={toggleFullscreen}
+            className="w-12 h-12 rounded-full bg-black/70 hover:bg-netflix-red text-white hover:text-white transition-all duration-200 flex items-center justify-center shadow-lg"
+          >
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
         </div>
       )}
     </div>
