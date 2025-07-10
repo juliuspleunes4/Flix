@@ -240,7 +240,7 @@ const Login: React.FC = () => {
             fontSize: '0.875rem' 
           }}>
             <p className="mb-2" style={{ marginBottom: '0.5rem' }}>For personal use only</p>
-            <p className="text-xs opacity-75" style={{ fontSize: '0.75rem', opacity: 0.75 }}>FLIX © M. Dirks & J. Pleunes</p>
+            <p className="text-xs opacity-75" style={{ fontSize: '0.75rem', opacity: 0.75 }}>FLIX © 2025</p>
           </div>
         </div>
       </main>
