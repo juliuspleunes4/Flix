@@ -217,7 +217,7 @@ const NavBar: React.FC<NavBarProps> = ({
 
             {/* User Avatar and Menu */}
             <div className="flex items-center space-x-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div className="w-8 h-8 bg-gradient-to-br from-netflix-red to-netflix-red-dark rounded-md flex items-center justify-center shadow-lg" style={{
+              <div className="w-8 h-8 bg-gradient-to-br from-netflix-red to-netflix-red-dark rounded-md flex items-center justify-center shadow-lg overflow-hidden" style={{
                 width: '2rem',
                 height: '2rem',
                 background: 'linear-gradient(to bottom right, #E50914, #B20710)',
@@ -225,9 +225,19 @@ const NavBar: React.FC<NavBarProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                overflow: 'hidden'
               }}>
-                <span className="text-white font-bold text-sm" style={{ color: 'white', fontWeight: 'bold', fontSize: '0.875rem' }}>U</span>
+                <img 
+                  src="/src/assets/profile_picture_user.png" 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
+                />
               </div>
               <button
                 onClick={() => setShowCustomPathModal(true)}
