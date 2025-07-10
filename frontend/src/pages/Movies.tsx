@@ -12,7 +12,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [sortBy, setSortBy] = useState<'title' | 'size' | 'date'>('title');
+  const [sortBy, setSortBy] = useState<'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc' | 'year-desc' | 'year-asc'>('title-asc');
 
   useEffect(() => {
     loadMovies();
@@ -37,12 +37,18 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
 
   const sortedMovies = [...filteredMovies].sort((a, b) => {
     switch (sortBy) {
-      case 'title':
+      case 'title-asc':
         return a.title.localeCompare(b.title);
-      case 'size':
-        return (b.size || 0) - (a.size || 0);
-      case 'date':
-        return new Date(b.modified || 0).getTime() - new Date(a.modified || 0).getTime();
+      case 'title-desc':
+        return b.title.localeCompare(a.title);
+      case 'rating-desc':
+        return (b.stars || 3.5) - (a.stars || 3.5);
+      case 'rating-asc':
+        return (a.stars || 3.5) - (b.stars || 3.5);
+      case 'year-desc':
+        return (b.year || 0) - (a.year || 0);
+      case 'year-asc':
+        return (a.year || 0) - (b.year || 0);
       default:
         return 0;
     }
@@ -140,7 +146,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
                 </label>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'title' | 'size' | 'date')}
+                  onChange={(e) => setSortBy(e.target.value as 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc' | 'year-desc' | 'year-asc')}
                   className="bg-netflix-gray-dark border border-netflix-gray text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-netflix-red transition-all duration-200"
                   style={{
                     backgroundColor: '#222222',
@@ -150,9 +156,12 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
                     borderRadius: '0.375rem'
                   }}
                 >
-                  <option value="title">Title A-Z</option>
-                  <option value="size">File Size</option>
-                  <option value="date">Date Added</option>
+                  <option value="title-asc">Title A-Z</option>
+                  <option value="title-desc">Title Z-A</option>
+                  <option value="rating-desc">Rating (High to Low)</option>
+                  <option value="rating-asc">Rating (Low to High)</option>
+                  <option value="year-desc">Release Date (Newest First)</option>
+                  <option value="year-asc">Release Date (Oldest First)</option>
                 </select>
               </div>
             </div>
@@ -160,7 +169,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
 
           {/* Movies Grid */}
           {sortedMovies.length === 0 ? (
-            <div className="text-center py-32 animate-fade-in" style={{ textAlign: 'center', padding: '8rem 0' }}>
+            <div className="py-4 animate-fade-in" style={{ padding: '1rem 0' }}>
               <div className="mb-8" style={{ marginBottom: '2rem' }}>
                 <div className="text-6xl mb-6" style={{ fontSize: '4rem', marginBottom: '1.5rem', opacity: 0.6 }}>🎬</div>
               </div>
@@ -172,12 +181,11 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
               }}>
                 {searchQuery ? 'No movies found' : 'No movies available'}
               </h3>
-              <p className="text-gray-400 mb-12 text-xl max-w-2xl mx-auto leading-relaxed" style={{
+              <p className="text-gray-400 mb-12 text-xl max-w-2xl leading-relaxed" style={{
                 color: '#9CA3AF',
                 marginBottom: '3rem',
                 fontSize: '1.125rem',
                 maxWidth: '42rem',
-                margin: '0 auto 3rem auto',
                 lineHeight: '1.625'
               }}>
                 {searchQuery ? (

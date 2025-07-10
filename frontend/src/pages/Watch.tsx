@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { apiClient, type Movie, formatFileSize } from '../utils/api';
+import { addRecentMovie } from '../utils/recentMovies';
 
 const Watch: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +37,15 @@ const Watch: React.FC = () => {
       setMovie(movieData);
       setError(''); // Clear any previous errors when movie loads successfully
       console.log(`✅ Frontend: Movie state should be set to:`, movieData.title);
+      
+      // Add to recent movies when successfully loaded
+      addRecentMovie({
+        id: movieData.id,
+        title: movieData.title,
+        thumbnail: movieData.thumbnail,
+        stars: movieData.stars,
+        size: movieData.size
+      });
     } catch (error) {
       console.error('❌ Frontend: Failed to load movie:', error);
       setError('Movie could not be loaded.');

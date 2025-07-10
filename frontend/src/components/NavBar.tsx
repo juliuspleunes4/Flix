@@ -253,136 +253,126 @@ const NavBar: React.FC<NavBarProps> = ({
       
       {/* Custom Path Modal */}
       {showCustomPathModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 pt-20" style={{
+        <div className="fixed bg-netflix-gray-dark p-6 rounded-lg max-w-md w-full mx-4 shadow-2xl" style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          zIndex: 50,
-          paddingTop: '5rem'
+          top: '5.5rem',
+          right: '1rem',
+          backgroundColor: '#1a1a1a',
+          padding: '1.5rem',
+          borderRadius: '0.5rem',
+          maxWidth: '28rem',
+          width: '28rem',
+          zIndex: 60,
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)'
         }}>
-          <div className="bg-netflix-gray-dark p-6 rounded-lg max-w-md w-full mx-4" style={{
-            backgroundColor: '#1a1a1a',
-            padding: '1.5rem',
-            borderRadius: '0.5rem',
-            maxWidth: '28rem',
-            width: '100%',
-            margin: '0 1rem'
+          <h3 className="text-xl font-bold text-white mb-4" style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            color: 'white',
+            marginBottom: '1rem'
           }}>
-            <h3 className="text-xl font-bold text-white mb-4" style={{
-              fontSize: '1.25rem',
-              fontWeight: 'bold',
+            Custom Movie Path
+          </h3>
+          <p className="text-gray-300 mb-4 text-sm" style={{
+            color: '#D1D5DB',
+            marginBottom: '1rem',
+            fontSize: '0.875rem'
+          }}>
+            Enter the path to scan for movies. Each movie should be in its own folder with a source.txt file containing movie information.
+          </p>
+          
+          <input
+            type="text"
+            value={customPath}
+            onChange={(e) => setCustomPath(e.target.value)}
+            placeholder="C:\Movies\Custom"
+            className="w-full bg-netflix-gray border border-netflix-gray-light text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-netflix-red mb-2"
+            style={{
+              width: 'calc(100% - 2rem)',
+              backgroundColor: '#2a2a2a',
+              border: '1px solid #444',
               color: 'white',
+              padding: '0.5rem 0.75rem',
+              borderRadius: '0.375rem',
+              marginBottom: '0.5rem'
+            }}
+          />
+          
+          {localStorage.getItem('flix-custom-path') && (
+            <p className="text-xs text-gray-400 mb-4" style={{
+              fontSize: '0.75rem',
+              color: '#9CA3AF',
               marginBottom: '1rem'
             }}>
-              Custom Movie Path
-            </h3>
-            <p className="text-gray-300 mb-4 text-sm" style={{
-              color: '#D1D5DB',
-              marginBottom: '1rem',
-              fontSize: '0.875rem'
-            }}>
-              Enter the path to scan for movies. Each movie should be in its own folder with a source.txt file containing movie information.
+              💾 Auto-loaded from saved path
             </p>
-            
-            <input
-              type="text"
-              value={customPath}
-              onChange={(e) => setCustomPath(e.target.value)}
-              placeholder="C:\Movies\Custom"
-              className="w-full bg-netflix-gray border border-netflix-gray-light text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-netflix-red mb-2"
-              style={{
-                width: '100%',
-                backgroundColor: '#2a2a2a',
-                border: '1px solid #444',
-                color: 'white',
-                padding: '0.5rem 0.75rem',
-                borderRadius: '0.375rem',
-                marginBottom: '0.5rem'
-              }}
-            />
-            
-            {localStorage.getItem('flix-custom-path') && (
-              <p className="text-xs text-gray-400 mb-4" style={{
-                fontSize: '0.75rem',
-                color: '#9CA3AF',
-                marginBottom: '1rem'
-              }}>
-                💾 Auto-loaded from saved path
-              </p>
-            )}
-            
-            {scanResult && (
-              <div className={`p-3 rounded-md mb-4 ${scanResult.success ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`} style={{
-                padding: '0.75rem',
-                borderRadius: '0.375rem',
-                marginBottom: '1rem',
-                backgroundColor: scanResult.success ? '#064e3b' : '#7f1d1d',
-                color: scanResult.success ? '#bbf7d0' : '#fecaca'
-              }}>
-                {scanResult.success ? (
-                  <span>✅ Found {scanResult.count} movies!</span>
-                ) : (
-                  <span>❌ {scanResult.error}</span>
-                )}
-              </div>
-            )}
-            
-            <div className="flex justify-end space-x-3" style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '0.75rem'
+          )}
+          
+          {scanResult && (
+            <div className={`p-3 rounded-md mb-4 ${scanResult.success ? 'bg-green-900 text-green-200' : 'bg-red-900 text-red-200'}`} style={{
+              padding: '0.75rem',
+              borderRadius: '0.375rem',
+              marginBottom: '1rem',
+              backgroundColor: scanResult.success ? '#064e3b' : '#7f1d1d',
+              color: scanResult.success ? '#bbf7d0' : '#fecaca'
             }}>
-              <button
-                onClick={() => setShowCustomPathModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#4b5563',
-                  color: 'white',
-                  borderRadius: '0.375rem',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleClearCustomMovies}
-                className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#d97706',
-                  color: 'white',
-                  borderRadius: '0.375rem',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                Clear
-              </button>
-              <button
-                onClick={handleCustomPathScan}
-                disabled={isScanning}
-                className="px-4 py-2 bg-netflix-red text-white rounded-md hover:bg-netflix-red-dark transition-colors disabled:opacity-50"
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#E50914',
-                  color: 'white',
-                  borderRadius: '0.375rem',
-                  border: 'none',
-                  cursor: 'pointer',
-                  opacity: isScanning ? 0.5 : 1
-                }}
-              >
-                {isScanning ? 'Scanning...' : 'Scan'}
-              </button>
+              {scanResult.success ? (
+                <span>✅ Found {scanResult.count} movies!</span>
+              ) : (
+                <span>❌ {scanResult.error}</span>
+              )}
             </div>
+          )}
+          
+          <div className="flex justify-end space-x-3" style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: '0.75rem'
+          }}>
+            <button
+              onClick={() => setShowCustomPathModal(false)}
+              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#4b5563',
+                color: 'white',
+                borderRadius: '0.375rem',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleClearCustomMovies}
+              className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#d97706',
+                color: 'white',
+                borderRadius: '0.375rem',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              Clear
+            </button>
+            <button
+              onClick={handleCustomPathScan}
+              disabled={isScanning}
+              className="px-4 py-2 bg-netflix-red text-white rounded-md hover:bg-netflix-red-dark transition-colors disabled:opacity-50"
+              style={{
+                padding: '0.5rem 1rem',
+                backgroundColor: '#E50914',
+                color: 'white',
+                borderRadius: '0.375rem',
+                border: 'none',
+                cursor: 'pointer',
+                opacity: isScanning ? 0.5 : 1
+              }}
+            >
+              {isScanning ? 'Scanning...' : 'Scan'}
+            </button>
           </div>
         </div>
       )}

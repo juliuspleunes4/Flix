@@ -3,8 +3,11 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const fs = require('fs');
-const { googleDriveMovies } = require('./movies.config');
+// const { googleDriveMovies } = require('./movies.config'); // Commented out - Google Drive movies temporarily disabled
 require('dotenv').config();
+
+// Temporary empty array to replace Google Drive movies while commented out
+const googleDriveMovies = []; // This will be empty until the Google Drive feature is re-enabled
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -272,14 +275,15 @@ app.get('/api/movies', requireAuth, (req, res) => {
     // Combine local movies with Google Drive movies and custom movies
     const allMovies = [
       ...localMovies,
-      ...googleDriveMovies.map(movie => ({
-        ...movie,
-        modified: new Date().toISOString() // Use current time for Google Drive movies
-      })),
+      // ...googleDriveMovies.map(movie => ({  // Commented out - Google Drive movies temporarily disabled
+      //   ...movie,
+      //   modified: new Date().toISOString() // Use current time for Google Drive movies
+      // })),
       ...customMovies
     ];
     
-    console.log(`Found ${localMovies.length} local movies, ${googleDriveMovies.length} Google Drive movies, and ${customMovies.length} custom movies`);
+    console.log(`Found ${localMovies.length} local movies and ${customMovies.length} custom movies`);
+    // console.log(`Found ${localMovies.length} local movies, ${googleDriveMovies.length} Google Drive movies, and ${customMovies.length} custom movies`); // Commented out - Google Drive movies temporarily disabled
     console.log(`Total: ${allMovies.length} movies available`);
     
     res.json(allMovies);
@@ -297,22 +301,22 @@ app.get('/api/movies/:id', requireAuth, (req, res) => {
   console.log(`🎬 Requesting movie with ID: ${movieId}`);
   
   try {
-    // Check if it's a Google Drive movie
-    if (movieId.startsWith('gdrive_')) {
-      console.log(`📂 Looking for Google Drive movie: ${movieId}`);
-      const gdriveMovie = googleDriveMovies.find(movie => movie.id === movieId);
-      if (gdriveMovie) {
-        console.log(`✅ Found Google Drive movie: ${gdriveMovie.title}`);
-        res.json({
-          ...gdriveMovie,
-          modified: new Date().toISOString()
-        });
-        return;
-      } else {
-        console.log(`❌ Google Drive movie not found: ${movieId}`);
-        console.log(`Available Google Drive movies:`, googleDriveMovies.map(m => m.id));
-      }
-    }
+    // Check if it's a Google Drive movie - Commented out temporarily
+    // if (movieId.startsWith('gdrive_')) {
+    //   console.log(`📂 Looking for Google Drive movie: ${movieId}`);
+    //   const gdriveMovie = googleDriveMovies.find(movie => movie.id === movieId);
+    //   if (gdriveMovie) {
+    //     console.log(`✅ Found Google Drive movie: ${gdriveMovie.title}`);
+    //     res.json({
+    //       ...gdriveMovie,
+    //       modified: new Date().toISOString()
+    //     });
+    //     return;
+    //   } else {
+    //     console.log(`❌ Google Drive movie not found: ${movieId}`);
+    //     console.log(`Available Google Drive movies:`, googleDriveMovies.map(m => m.id));
+    //   }
+    // }
     
     // Check if it's a local movie
     if (movieId.startsWith('local_')) {
@@ -418,9 +422,11 @@ app.get('/api/stats', requireAuth, (req, res) => {
       });
     }
     
-    // Count Google Drive movies
-    const gdriveMovieCount = googleDriveMovies.length;
-    const gdriveTotalSize = googleDriveMovies.reduce((total, movie) => total + (movie.size || 0), 0);
+    // Count Google Drive movies - Commented out temporarily
+    // const gdriveMovieCount = googleDriveMovies.length;
+    // const gdriveTotalSize = googleDriveMovies.reduce((total, movie) => total + (movie.size || 0), 0);
+    const gdriveMovieCount = 0; // Temporarily set to 0 while Google Drive movies are disabled
+    const gdriveTotalSize = 0; // Temporarily set to 0 while Google Drive movies are disabled
     
     const totalMovieCount = localMovieCount + gdriveMovieCount;
     const totalSize = localTotalSize + gdriveTotalSize;
@@ -457,7 +463,8 @@ app.get('/api/stats', requireAuth, (req, res) => {
   }
 });
 
-// Add or update Google Drive movie (admin endpoint)
+// Add or update Google Drive movie (admin endpoint) - Commented out temporarily
+/*
 app.post('/api/admin/gdrive-movies', requireAuth, (req, res) => {
   try {
     const { title, url, description, year, genre, duration, rating, quality, thumbnail } = req.body;
@@ -525,6 +532,7 @@ app.delete('/api/admin/gdrive-movies/:id', requireAuth, (req, res) => {
     res.status(500).json({ error: 'Failed to delete movie' });
   }
 });
+*/
 
 // Store custom movies
 let customMovies = [];

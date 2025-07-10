@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { apiClient, type Movie, formatFileSize } from '../utils/api';
+import { getRecentMovies, clearRecentMovies } from '../utils/recentMovies';
 
 interface HomeProps {
   searchQuery: string;
@@ -14,17 +15,43 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    loadMovies();
+    loadRecentMovies();
   }, [refreshTrigger]);
 
-  const loadMovies = async () => {
+  // Also refresh when the page becomes visible (user returns from another tab/window)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadRecentMovies();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  const loadRecentMovies = async () => {
     try {
       setIsLoading(true);
-      const movieList = await apiClient.getMovies();
-      setMovies(movieList);
+      
+      // Get recent movie IDs from localStorage
+      const recent = getRecentMovies();
+      
+      // If we have recent movies, fetch their full details
+      if (recent.length > 0) {
+        const movieList = await apiClient.getMovies();
+        // Filter movies to only include recent ones, maintaining order
+        const recentMovieDetails = recent.map(recentMovie => 
+          movieList.find(movie => movie.id === recentMovie.id)
+        ).filter(Boolean) as Movie[];
+        
+        setMovies(recentMovieDetails);
+      } else {
+        setMovies([]);
+      }
     } catch (error) {
-      console.error('Failed to load movies:', error);
-      setError('Could not load movies. Please refresh the page.');
+      console.error('Failed to load recent movies:', error);
+      setError('Could not load recent movies. Please refresh the page.');
     } finally {
       setIsLoading(false);
     }
@@ -57,8 +84,8 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
 
   return (
     <div className="min-h-screen text-white" style={{ backgroundColor: '#141414', minHeight: '100vh', color: 'white' }}>
-      {/* Main Content with proper top padding */}
-      <main className="pt-24" style={{ paddingTop: '6rem' }}>
+      {/* Main Content with reduced top padding to move elements up */}
+      <main className="pt-16" style={{ paddingTop: '1rem' }}>
         {error && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8" style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem', marginBottom: '2rem' }}>
             <div className="bg-netflix-red/10 border border-netflix-red/30 text-netflix-red px-6 py-4 rounded-xl backdrop-blur-sm animate-slide-up" style={{
@@ -74,7 +101,7 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
                   <span className="font-medium" style={{ fontWeight: '500' }}>{error}</span>
                 </div>
                 <button
-                  onClick={loadMovies}
+                  onClick={loadRecentMovies}
                   className="bg-netflix-red hover:bg-netflix-red-dark text-white px-6 py-2 rounded-lg transition-all duration-200 font-medium"
                   style={{
                     backgroundColor: '#E50914',
@@ -97,15 +124,16 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
           {/* Clean Hero Section */}
           <section id="hero" className="mb-8" style={{ marginBottom: '2rem' }}>
             <div className="py-12" style={{ padding: '3rem 0' }}>
-              <h2 id="library" className="text-5xl md:text-6xl font-bold text-white mb-4" style={{
-                fontSize: '3rem',
-                fontWeight: '700',
-                color: 'white',
-                marginBottom: '1rem',
-                letterSpacing: '-0.02em'
-              }}>
-                {searchQuery ? 'Search Results' : 'Your Library'}
-              </h2>
+              <div className="flex items-center justify-between mb-4" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <h2 id="library" className="text-5xl md:text-6xl font-bold text-white" style={{
+                  fontSize: '3rem',
+                  fontWeight: '700',
+                  color: 'white',
+                  letterSpacing: '-0.02em'
+                }}>
+                  {searchQuery ? 'Search Results' : 'Recently Watched'}
+                </h2>
+              </div>
               <p className="text-lg text-gray-400 mb-8" style={{
                 fontSize: '1.125rem',
                 color: '#9CA3AF',
@@ -115,9 +143,12 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
                 {searchQuery ? (
                   `${filteredMovies.length} ${filteredMovies.length === 1 ? 'movie' : 'movies'} found for "${searchQuery}"`
                 ) : (
-                  `${movies.length} ${movies.length === 1 ? 'movie' : 'movies'} available to watch`
+                  movies.length > 0 
+                    ? `${movies.length} recently watched ${movies.length === 1 ? 'movie' : 'movies'}`
+                    : 'No recently watched movies'
                 )}
               </p>
+              {/* Status indicators */}
               <div className="flex items-center space-x-6" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                 <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <div className="w-2 h-2 bg-green-500 rounded-full" style={{
@@ -139,61 +170,102 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
           </section>
 
           {filteredMovies.length === 0 ? (
-            <div className="text-center py-32 animate-fade-in" style={{ textAlign: 'center', padding: '8rem 0' }}>
-              <div className="mb-8" style={{ marginBottom: '2rem' }}>
-                <div className="text-6xl mb-6" style={{ fontSize: '4rem', marginBottom: '1.5rem', opacity: 0.6 }}>🎬</div>
+            <div className="py-16 animate-fade-in" style={{ padding: '4rem 0' }}>
+              <div className="mb-6" style={{ marginBottom: '1.5rem' }}>
+                <div className="text-6xl mb-4" style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.6 }}>🎬</div>
               </div>
-              <h3 className="text-4xl font-bold text-white mb-6" style={{
+              <h3 className="text-4xl font-bold text-white mb-4" style={{
                 fontSize: '2.25rem',
                 fontWeight: 'bold',
                 color: 'white',
-                marginBottom: '1.5rem'
+                marginBottom: '1rem'
               }}>
-                {searchQuery ? 'No movies found' : 'Your library awaits'}
+                {searchQuery ? 'No movies found' : 'Start watching!'}
               </h3>
-              <p className="text-gray-400 mb-12 text-xl max-w-2xl mx-auto leading-relaxed" style={{
+              <p className="text-gray-400 mb-8 text-xl max-w-2xl leading-relaxed" style={{
                 color: '#9CA3AF',
-                marginBottom: '3rem',
+                marginBottom: '2rem',
                 fontSize: '1.125rem',
                 maxWidth: '42rem',
-                margin: '0 auto 3rem auto',
                 lineHeight: '1.625'
               }}>
                 {searchQuery ? (
                   `No movies match your search for "${searchQuery}". Try a different search term.`
                 ) : (
-                  'Add some movies to your collection to start streaming. Simply drop your video files in the movies folder.'
+                  'No movies watched yet! Visit the Movies page to start watching and they\'ll appear here.'
                 )}
               </p>
-              <button
-                onClick={loadMovies}
-                className="bg-netflix-red hover:bg-netflix-red-dark text-white px-12 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 font-bold text-xl shadow-2xl shadow-netflix-red/25"
-                style={{
-                  backgroundColor: '#E50914',
-                  color: 'white',
-                  padding: '0.875rem 2.5rem',
-                  borderRadius: '0.5rem',
-                  border: 'none',
-                  fontWeight: '600',
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Refresh Library
-              </button>
+              <div className="flex gap-4 mt-16" style={{ display: 'flex', gap: '1rem', marginTop: '8rem' }}>
+                <button
+                  onClick={loadRecentMovies}
+                  className="bg-netflix-red hover:bg-netflix-red-dark text-white px-12 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 font-bold text-xl shadow-2xl shadow-netflix-red/25"
+                  style={{
+                    backgroundColor: '#E50914',
+                    color: 'white',
+                    padding: '0.875rem 2.5rem',
+                    borderRadius: '0.5rem',
+                    border: 'none',
+                    fontWeight: '600',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  Refresh - Recently Watched
+                </button>
+                <Link
+                  to="/movies"
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-12 py-4 rounded-xl transition-all duration-300 font-bold text-xl"
+                  style={{
+                    backgroundColor: '#374151',
+                    color: 'white',
+                    padding: '0.875rem 2.5rem',
+                    borderRadius: '0.5rem',
+                    fontWeight: '600',
+                    fontSize: '1rem',
+                    textDecoration: 'none',
+                    display: 'inline-block',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  Browse Movies
+                </Link>
+              </div>
             </div>
           ) : (
             <section id="movies" className="pb-16" style={{ paddingBottom: '4rem' }}>
-              <div className="mb-8" style={{ marginBottom: '2rem' }}>
-                <h3 className="text-2xl font-bold text-white mb-4" style={{
+              <div className="flex items-center justify-between mb-8" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+                <h3 className="text-2xl font-bold text-white" style={{
                   fontSize: '1.5rem',
                   fontWeight: 'bold',
-                  color: 'white',
-                  marginBottom: '1rem'
+                  color: 'white'
                 }}>
-                  {searchQuery ? 'Search Results' : 'Continue Watching'}
+                  {searchQuery ? 'Search Results' : 'Recently Watched'}
                 </h3>
+                
+                {/* Clear Recent Movies Button - only show if there are recent movies and not searching */}
+                {movies.length > 0 && !searchQuery && (
+                  <button
+                    onClick={() => {
+                      clearRecentMovies();
+                      loadRecentMovies();
+                    }}
+                    className="text-gray-400 hover:text-white text-sm px-3 py-1 rounded border border-gray-600 hover:border-gray-400 transition-all duration-200"
+                    style={{
+                      color: '#9CA3AF',
+                      fontSize: '0.875rem',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '0.375rem',
+                      border: '1px solid #4B5563',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer'
+                    }}
+                    title="Clear recently watched movies"
+                  >
+                    Clear Recent
+                  </button>
+                )}
               </div>
               <div className="grid gap-6" style={{ 
                 display: 'grid', 
