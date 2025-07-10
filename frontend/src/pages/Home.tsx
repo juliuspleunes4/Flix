@@ -170,24 +170,23 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
           </section>
 
           {filteredMovies.length === 0 ? (
-            <div className="text-center py-32 animate-fade-in" style={{ textAlign: 'center', padding: '8rem 0' }}>
-              <div className="mb-8" style={{ marginBottom: '2rem' }}>
-                <div className="text-6xl mb-6" style={{ fontSize: '4rem', marginBottom: '1.5rem', opacity: 0.6 }}>🎬</div>
+            <div className="py-16 animate-fade-in" style={{ padding: '4rem 0' }}>
+              <div className="mb-6" style={{ marginBottom: '1.5rem' }}>
+                <div className="text-6xl mb-4" style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.6 }}>🎬</div>
               </div>
-              <h3 className="text-4xl font-bold text-white mb-6" style={{
+              <h3 className="text-4xl font-bold text-white mb-4" style={{
                 fontSize: '2.25rem',
                 fontWeight: 'bold',
                 color: 'white',
-                marginBottom: '1.5rem'
+                marginBottom: '1rem'
               }}>
                 {searchQuery ? 'No movies found' : 'Start watching!'}
               </h3>
-              <p className="text-gray-400 mb-12 text-xl max-w-2xl mx-auto leading-relaxed" style={{
+              <p className="text-gray-400 mb-8 text-xl max-w-2xl leading-relaxed" style={{
                 color: '#9CA3AF',
-                marginBottom: '3rem',
+                marginBottom: '2rem',
                 fontSize: '1.125rem',
                 maxWidth: '42rem',
-                margin: '0 auto 3rem auto',
                 lineHeight: '1.625'
               }}>
                 {searchQuery ? (
@@ -196,7 +195,7 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
                   'No movies watched yet! Visit the Movies page to start watching and they\'ll appear here.'
                 )}
               </p>
-              <div className="flex gap-4" style={{ display: 'flex', gap: '1rem' }}>
+              <div className="flex gap-4 mt-16" style={{ display: 'flex', gap: '1rem', marginTop: '8rem' }}>
                 <button
                   onClick={loadRecentMovies}
                   className="bg-netflix-red hover:bg-netflix-red-dark text-white px-12 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 font-bold text-xl shadow-2xl shadow-netflix-red/25"
