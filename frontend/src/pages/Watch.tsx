@@ -60,10 +60,24 @@ const Watch: React.FC = () => {
     try {
       const keywords = title.split(' ').filter(word => word.length > 3);
       const recommendations = await apiClient.getMovies();
-      const filteredMovies = recommendations.filter(movie =>
-        keywords.some(keyword => movie.title.includes(keyword))
+
+      // Exclude the current movie from recommendations
+      const filteredRecommendations = recommendations.filter(movie => movie.id !== id);
+
+      // Filter movies based on keyword matches
+      const keywordMatches = filteredRecommendations.filter(movie =>
+        keywords.some(keyword => movie.title.toLowerCase().includes(keyword.toLowerCase()))
       );
-      setRecommendedMovies(filteredMovies.length > 0 ? filteredMovies.slice(0, 6) : recommendations.slice(0, 6));
+
+      // If fewer than 6 matches, add fallback movies as 6 random ones
+      const fallbackMovies = filteredRecommendations
+        .filter(movie => !keywordMatches.includes(movie))
+        .sort(() => Math.random() - 0.5) // Shuffle the array randomly
+        .slice(0, 6); // Pick the first 6 after shuffling
+
+      const combinedRecommendations = [...keywordMatches, ...fallbackMovies].slice(0, 6);
+
+      setRecommendedMovies(combinedRecommendations);
     } catch (error) {
       console.error('Failed to load recommended movies:', error);
     }
