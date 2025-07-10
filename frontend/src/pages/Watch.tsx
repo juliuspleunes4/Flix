@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { apiClient, type Movie } from '../utils/api';
+import { apiClient, type Movie, formatFileSize } from '../utils/api';
 import { addRecentMovie } from '../utils/recentMovies';
 
 const Watch: React.FC = () => {
@@ -11,6 +11,7 @@ const Watch: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -28,7 +29,7 @@ const Watch: React.FC = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const loadMovie = async (movieId: string) => { // Changed from number to string
+  const loadMovie = React.useCallback(async (movieId: string) => {
     try {
       setIsLoading(true);
       console.log(`🎬 Frontend: Loading movie with ID: ${movieId}`);
@@ -46,11 +47,25 @@ const Watch: React.FC = () => {
         stars: movieData.stars,
         size: movieData.size
       });
+      loadRecommendedMovies(movieData.title);
     } catch (error) {
       console.error('❌ Frontend: Failed to load movie:', error);
       setError('Movie could not be loaded.');
     } finally {
       setIsLoading(false);
+    }
+  }, []);
+
+  const loadRecommendedMovies = async (title: string) => {
+    try {
+      const keywords = title.split(' ').filter(word => word.length > 3);
+      const recommendations = await apiClient.getMovies();
+      const filteredMovies = recommendations.filter(movie =>
+        keywords.some(keyword => movie.title.includes(keyword))
+      );
+      setRecommendedMovies(filteredMovies.length > 0 ? filteredMovies.slice(0, 6) : recommendations.slice(0, 6));
+    } catch (error) {
+      console.error('Failed to load recommended movies:', error);
     }
   };
 
@@ -277,6 +292,95 @@ const Watch: React.FC = () => {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Recommended Movies Section */}
+      <div className="absolute top-[6rem] right-[1rem] w-[30%] bg-black/50 p-4 rounded-lg">
+        <h2 className="text-white text-lg font-bold mb-4">Your next recommended watch</h2>
+        <div className="grid gap-4" style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
+          gap: '1rem' 
+        }}>
+          {recommendedMovies.map(movie => (
+            <Link
+              key={movie.id}
+              to={`/watch/${movie.id}`}
+              className="group relative bg-netflix-gray-dark rounded-lg overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+              style={{ 
+                position: 'relative',
+                backgroundColor: '#1a1a1a',
+                borderRadius: '0.5rem',
+                overflow: 'hidden',
+                transition: 'all 0.3s ease',
+                textDecoration: 'none',
+                color: 'inherit',
+                cursor: 'pointer'
+              }}
+            >
+              {/* Movie Poster */}
+              <div className="aspect-[2/3] bg-gray-800 flex items-center justify-center relative overflow-hidden" style={{
+                aspectRatio: '2/3',
+                backgroundColor: '#2a2a2a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {movie.thumbnail ? (
+                  <>
+                    <img
+                      src={movie.thumbnail}
+                      alt={movie.title}
+                      className="w-full h-full object-cover transition-opacity duration-300"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  </>
+                ) : (
+                  <div className="text-4xl text-gray-600" style={{
+                    fontSize: '2.5rem',
+                    color: '#6B7280'
+                  }}>🎬</div>
+                )}
+              </div>
+              {/* Movie Info */}
+              <div className="p-2" style={{ padding: '0.5rem' }}>
+                <h3 className="text-white font-medium text-xs truncate mb-1" style={{
+                  color: 'white',
+                  fontWeight: '500',
+                  fontSize: '0.75rem',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  marginBottom: '0.25rem'
+                }}>
+                  {movie.title}
+                </h3>
+                {/* Stars and Size Info */}
+                <div className="flex items-center justify-between text-xs text-gray-400" style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between', 
+                  fontSize: '0.75rem', 
+                  color: '#9CA3AF' 
+                }}>
+                  {movie.size && (
+                    <span>{formatFileSize(movie.size)}</span>
+                  )}
+                  <div className="flex items-center space-x-1" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <span style={{ color: '#FBBF24' }}>★</span>
+                    <span>{(movie.stars || 3.5).toFixed(1)}</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 
