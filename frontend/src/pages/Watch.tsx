@@ -173,7 +173,7 @@ const Watch: React.FC = () => {
 
       {/* Video Player */}
       <div className="relative w-full bg-black flex flex-col items-start justify-start" style={{ paddingTop: '6rem', paddingLeft: '1rem' }}>
-        <div className="w-3/5 h-3/5 max-w-[72rem] max-h-[75vh] aspect-video">
+        <div className="w-full max-w-[64rem] max-h-[70vh] aspect-video">
           {currentMovie.source === 'gdrive' ? (
             // Google Drive iframe player
             <iframe
@@ -183,7 +183,10 @@ const Watch: React.FC = () => {
               allowFullScreen
               style={{
                 border: 'none',
-                filter: 'contrast(1.1) brightness(1.05)'
+                filter: 'contrast(1.1) brightness(1.05)',
+                maxWidth: '100%',
+                maxHeight: '100%',
+                aspectRatio: '16/9'
               }}
               onLoad={() => console.log('✅ Google Drive iframe loaded')}
               onError={() => {
@@ -222,7 +225,10 @@ const Watch: React.FC = () => {
               onPlaying={() => console.log('▶️ Video is playing')}
               onPause={() => console.log('⏸️ Video paused')}
               style={{
-                filter: 'contrast(1.1) brightness(1.05)'
+                filter: 'contrast(1.1) brightness(1.05)',
+                maxWidth: '100%',
+                maxHeight: '100%',
+                aspectRatio: '16/9'
               }}
             >
               <source
