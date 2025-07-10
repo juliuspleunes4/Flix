@@ -12,7 +12,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [sortBy, setSortBy] = useState<'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc'>('title-asc');
+  const [sortBy, setSortBy] = useState<'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc' | 'year-desc' | 'year-asc'>('title-asc');
 
   useEffect(() => {
     loadMovies();
@@ -45,6 +45,10 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
         return (b.stars || 3.5) - (a.stars || 3.5);
       case 'rating-asc':
         return (a.stars || 3.5) - (b.stars || 3.5);
+      case 'year-desc':
+        return (b.year || 0) - (a.year || 0);
+      case 'year-asc':
+        return (a.year || 0) - (b.year || 0);
       default:
         return 0;
     }
@@ -142,7 +146,7 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
                 </label>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc')}
+                  onChange={(e) => setSortBy(e.target.value as 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc' | 'year-desc' | 'year-asc')}
                   className="bg-netflix-gray-dark border border-netflix-gray text-white px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-netflix-red transition-all duration-200"
                   style={{
                     backgroundColor: '#222222',
@@ -156,6 +160,8 @@ const Movies: React.FC<MoviesProps> = ({ searchQuery, refreshTrigger }) => {
                   <option value="title-desc">Title Z-A</option>
                   <option value="rating-desc">Rating (High to Low)</option>
                   <option value="rating-asc">Rating (Low to High)</option>
+                  <option value="year-desc">Release Date (Newest First)</option>
+                  <option value="year-asc">Release Date (Oldest First)</option>
                 </select>
               </div>
             </div>
