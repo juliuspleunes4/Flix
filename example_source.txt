@@ -1,0 +1,11 @@
+{
+  "title": "Example Movie",
+  "description": "This is an example movie from a custom path. This demonstrates how to add movies from custom directories.",
+  "year": 2023,
+  "genre": ["Drama", "Action"],
+  "duration": "120 min",
+  "rating": "PG-13",
+  "quality": "1080p",
+  "stars": 4.2,
+  "thumbnail": "https://via.placeholder.com/300x450/141414/E50914?text=Example+Movie"
+}

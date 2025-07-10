@@ -167,7 +167,7 @@ const Watch: React.FC = () => {
               }}
             />
           ) : (
-            // Local video player
+            // Local and Custom video player
             <video
               ref={videoRef}
               controls
@@ -175,13 +175,19 @@ const Watch: React.FC = () => {
               className="w-full h-full object-contain"
               onError={(e) => {
                 console.error('❌ Video player error:', e);
-                console.error('❌ Video source:', `http://localhost:3000/api/stream/${currentMovie.id}`);
+                const streamUrl = currentMovie.source === 'custom' 
+                  ? `http://localhost:3000/api/stream/custom/${currentMovie.id.replace('custom_', '')}`
+                  : `http://localhost:3000/api/stream/${currentMovie.id}`;
+                console.error('❌ Video source:', streamUrl);
                 console.error('❌ Movie object:', currentMovie);
                 setError('Error playing the video.');
               }}
               onLoadStart={() => {
                 console.log('🎬 Video load started');
-                console.log('🎬 Video source:', `http://localhost:3000/api/stream/${currentMovie.id}`);
+                const streamUrl = currentMovie.source === 'custom' 
+                  ? `http://localhost:3000/api/stream/custom/${currentMovie.id.replace('custom_', '')}`
+                  : `http://localhost:3000/api/stream/${currentMovie.id}`;
+                console.log('🎬 Video source:', streamUrl);
               }}
               onCanPlay={() => console.log('✅ Video can play')}
               onLoadedData={() => console.log('✅ Video data loaded')}
@@ -195,7 +201,9 @@ const Watch: React.FC = () => {
               }}
             >
               <source
-                src={`http://localhost:3000/api/stream/${currentMovie.id}`}
+                src={currentMovie.source === 'custom' 
+                  ? `http://localhost:3000/api/stream/custom/${currentMovie.id.replace('custom_', '')}`
+                  : `http://localhost:3000/api/stream/${currentMovie.id}`}
                 type={currentMovie.filename?.endsWith('.mp4') ? 'video/mp4' : 
                       currentMovie.filename?.endsWith('.mkv') ? 'video/x-matroska' : 
                       currentMovie.filename?.endsWith('.avi') ? 'video/x-msvideo' :
@@ -284,7 +292,7 @@ const Watch: React.FC = () => {
                 <svg style={{ width: '18px', height: '18px', marginRight: '10px' }} className="text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                 </svg>
-                <span>{currentMovie.source === 'gdrive' ? 'Google Drive' : 'Local'}</span>
+                <span>{currentMovie.source === 'gdrive' ? 'Google Drive' : currentMovie.source === 'custom' ? 'Custom Path' : 'Local'}</span>
               </div>
               
               {currentMovie.size && (

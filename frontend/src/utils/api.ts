@@ -5,7 +5,7 @@ export interface Movie {
   title: string;
   filename?: string; // Optional for Google Drive movies
   url: string;
-  source: 'local' | 'gdrive'; // New field to identify source
+  source: 'local' | 'gdrive' | 'custom'; // New field to identify source
   size?: number;
   modified?: string;
   thumbnail?: string;
@@ -17,6 +17,7 @@ export interface Movie {
   rating?: string;
   quality?: string;
   stars?: number; // Star rating (0-5)
+  customPath?: string; // For custom movies
 }
 
 class ApiClient {
@@ -67,6 +68,19 @@ class ApiClient {
     timestamp: string;
   }> {
     return this.request('/api/stats');
+  }
+
+  async scanCustomPath(customPath: string): Promise<{ success: boolean; movies: Movie[]; count: number }> {
+    return this.request('/api/custom-path', {
+      method: 'POST',
+      body: JSON.stringify({ customPath }),
+    });
+  }
+
+  async clearCustomMovies(): Promise<{ success: boolean; message: string }> {
+    return this.request('/api/custom-path', {
+      method: 'DELETE',
+    });
   }
 }
 
