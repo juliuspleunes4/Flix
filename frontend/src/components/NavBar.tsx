@@ -125,12 +125,21 @@ const NavBar: React.FC<NavBarProps> = ({
       top: 0, 
       left: 0, 
       right: 0, 
+      width: '100%',
       zIndex: 50, 
       backgroundColor: 'rgba(20, 20, 20, 0.95)', 
       backdropFilter: 'blur(8px)',
-      borderBottom: '1px solid rgba(51, 51, 51, 0.2)'
+      borderBottom: '1px solid rgba(51, 51, 51, 0.2)',
+      transform: 'translateZ(0)', // Force hardware acceleration
+      backfaceVisibility: 'hidden' // Prevent flickering
     }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ 
+        maxWidth: '80rem', 
+        margin: '0 auto', 
+        padding: '0 1rem',
+        width: '100%',
+        boxSizing: 'border-box'
+      }}>
         <div className="flex justify-between items-center py-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0' }}>
           {/* Logo and Navigation */}
           <div className="flex items-center space-x-10" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>

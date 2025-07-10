@@ -14,6 +14,19 @@ body {
   background-color: #141414;
   color: white;
   overflow-x: hidden;
+  overflow-y: scroll; /* Force scrollbar to always be visible */
+}
+
+/* Ensure consistent viewport width to prevent navbar movement */
+html {
+  overflow-y: scroll; /* Force scrollbar to always be visible on html element too */
+}
+
+/* Stabilize fixed navbar positioning */
+header[class*="fixed"] {
+  width: 100vw;
+  transform: translateZ(0); /* Force hardware acceleration for smoother positioning */
+  backface-visibility: hidden;
 }
 
 /* Enhanced loading spinner */
