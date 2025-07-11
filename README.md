@@ -48,12 +48,14 @@ Toegang tot Flix is afgeschermd via een gedeeld wachtwoord. Na succesvolle login
 
 ## 🧭 Navigatie-overzicht
 
-| Pagina            | Beschrijving                                     |
-|-------------------|--------------------------------------------------|
-| `/login`          | Invoeren van gedeeld wachtwoord                  |
-| `/home`           | Overzicht van alle beschikbare films             |
-| `/watch/:id`      | Videospeler voor het afspelen van geselecteerde film |
-| `/404`            | Fallbackpagina voor ongeldige routes             |
+| Pagina                | Beschrijving                                          |
+|-----------------------|-------------------------------------------------------|
+| `/login`              | Invoeren van gedeeld wachtwoord                       |
+| `/home`               | Overzicht van alle beschikbare films                  |
+| `/movies`             | Uitgebreide filmbibliotheek met zoekfunctie           |
+| `/watch/:id`          | Videospeler voor het afspelen van geselecteerde film  |
+| `/custom-path-info`   | Informatiepagina over Custom Path functionaliteit     |
+| `/404`                | Fallbackpagina voor ongeldige routes                  |
 
 ---
 
@@ -170,6 +172,49 @@ movies/
 3. Start frontend
 4. Navigeer naar `/login`, voer wachtwoord in
 5. Geniet van je eigen Netflix 🥳
+
+### 🛠️ Custom Path Functionaliteit
+
+Flix ondersteunt nu een **Custom Path** feature waarmee je eigen filmcollecties kunt scannen en toevoegen aan de bibliotheek. Deze functionaliteit is perfect voor het organiseren van persoonlijke videocollecties.
+
+### ✨ Belangrijkste features:
+- **Automatische detectie** van videobestanden in aangegeven mappen
+- **Ondersteuning voor meerdere formaten**: MP4, MKV, AVI, MOV, WMV
+- **Metadata uit JSON**: Elke film moet een `source.txt` bestand bevatten met filminformatie
+- **Persistent opslag**: Gescande paden worden lokaal opgeslagen voor toekomstige sessies
+- **Responsieve interface**: Werkt op zowel desktop als mobiele apparaten
+
+### 📁 Vereiste mapstructuur:
+```
+Je Custom Pad/
+├── Film 1/
+│   ├── movie.mp4
+│   └── source.txt
+├── Film 2/
+│   ├── movie.mkv
+│   └── source.txt
+└── Film 3/
+    ├── movie.avi
+    └── source.txt
+```
+
+### 📝 Voorbeeld source.txt:
+```json
+{
+  "title": "The Matrix",
+  "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+  "year": 1999,
+  "genre": ["Action", "Sci-Fi", "Thriller"],
+  "duration": "136 min",
+  "rating": "R",
+  "quality": "1080p",
+  "stars": 4.5
+}
+```
+
+### 🔗 Toegang tot informatie:
+Uitgebreide documentatie over het instellen en gebruiken van Custom Path is beschikbaar via de **informatiepagina** (`/custom-path-info`) die toegankelijk is via de "?" knop in het Custom Path modal.<br>
+
 
 ## 💡 Mogelijke uitbreidingen
 
