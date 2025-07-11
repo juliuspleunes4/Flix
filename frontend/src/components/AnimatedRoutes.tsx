@@ -7,6 +7,7 @@ import Home from '../pages/Home';
 import Movies from '../pages/Movies';
 import Watch from '../pages/Watch';
 import NotFound from '../pages/NotFound';
+import CustomPathInfo from '../pages/CustomPathInfo';
 import NavBar from './NavBar';
 import PageTransition from './PageTransition';
 
@@ -67,6 +68,14 @@ const AnimatedRoutes: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Movies searchQuery={searchQuery} setSearchQuery={setSearchQuery} refreshTrigger={refreshTrigger} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/custom-path-info"
+              element={
+                <ProtectedRoute>
+                  <CustomPathInfo />
                 </ProtectedRoute>
               }
             />

@@ -492,14 +492,47 @@ const NavBar: React.FC<NavBarProps> = ({
           maxHeight: 'calc(100vh - 7rem)',
           overflowY: 'auto'
         }}>
-          <h3 className="text-xl font-bold text-white mb-4" style={{
-            fontSize: '1.25rem',
-            fontWeight: 'bold',
-            color: 'white',
-            marginBottom: '1rem'
-          }}>
-            Custom Movie Path
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h3 className="text-xl font-bold text-white" style={{
+              fontSize: '1.25rem',
+              fontWeight: 'bold',
+              color: 'white',
+              margin: 0
+            }}>
+              Custom Movie Path
+            </h3>
+            <Link
+              to="/custom-path-info"
+              className="hover:scale-105 transition-all focus:outline-none"
+              style={{
+                backgroundColor: 'transparent',
+                color: 'white',
+                border: '2px solid white',
+                borderRadius: '50%',
+                width: '1.75rem',
+                height: '1.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textDecoration: 'none',
+                fontSize: '0.875rem',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              ?
+            </Link>
+          </div>
           <p className="text-gray-300 mb-4 text-sm" style={{
             color: '#D1D5DB',
             marginBottom: '1rem',
