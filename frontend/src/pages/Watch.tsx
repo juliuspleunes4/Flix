@@ -12,6 +12,7 @@ const Watch: React.FC = () => {
   const [error, setError] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     if (id) {
@@ -28,6 +29,18 @@ const Watch: React.FC = () => {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 1635); // Adjusted for almost window size
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [setIsMobileView]);
 
   const loadMovie = React.useCallback(async (movieId: string) => {
     try {
@@ -316,7 +329,7 @@ const Watch: React.FC = () => {
       </div>
 
       {/* Recommended Movies Section */}
-      <div className="absolute top-[6rem] right-[1rem] w-[30%] bg-black/50 p-4 rounded-lg">
+      <div className="absolute top-[6rem] right-[1rem] w-[30%] bg-black/50 p-4 rounded-lg" style={{ display: isMobileView ? 'none' : 'block' }}>
         <h2 className="text-white text-lg font-bold mb-4">Your next recommended watch</h2>
         <div className="grid gap-4" style={{ 
           display: 'grid', 
