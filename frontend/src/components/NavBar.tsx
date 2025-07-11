@@ -23,6 +23,8 @@ const NavBar: React.FC<NavBarProps> = ({
   const [customPath, setCustomPath] = useState('');
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<{ success: boolean; count: number; error?: string } | null>(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Auto-scan function for saved paths
   const handleAutoScan = async (pathToScan: string) => {
@@ -36,6 +38,18 @@ const NavBar: React.FC<NavBarProps> = ({
       // Don't show error to user for auto-scan, just log it
     }
   };
+
+  // Check window size for mobile view
+  useEffect(() => {
+    const checkWindowSize = () => {
+      setIsMobile(window.innerWidth <= 875);
+    };
+
+    checkWindowSize();
+    window.addEventListener('resize', checkWindowSize);
+
+    return () => window.removeEventListener('resize', checkWindowSize);
+  }, []);
 
   // Load saved custom path from localStorage on component mount
   useEffect(() => {
@@ -140,108 +154,286 @@ const NavBar: React.FC<NavBarProps> = ({
           boxSizing: 'border-box'
         }}>
           <div className="flex justify-between items-center py-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0' }}>
-            {/* Logo and Navigation */}
-            <div className="flex items-center space-x-10" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
-              <Link to="/home" className="cursor-pointer hover:scale-105 transition-transform duration-200 focus:outline-none" style={{ 
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-                textDecoration: 'none',
-                outline: 'none',
-                boxShadow: 'none',
-                marginLeft: '-1rem'
-              }}>
-                <img 
-                  src="/src/assets/logo_flix.png" 
-                  alt="FLIX" 
-                  className="h-9"
-                  style={{
-                    height: '2.25rem',
-                    width: 'auto'
+            {!isMobile ? (
+              // Desktop Navigation (> 875px)
+              <>
+                {/* Logo and Navigation */}
+                <div className="flex items-center space-x-10" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+                  <Link to="/home" className="cursor-pointer hover:scale-105 transition-transform duration-200 focus:outline-none" style={{ 
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s',
+                    textDecoration: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    marginLeft: '0rem'
+                  }}>
+                    <img 
+                      src="/src/assets/logo_flix.png" 
+                      alt="FLIX" 
+                      className="h-9"
+                      style={{
+                        height: '2.25rem',
+                        width: 'auto'
+                      }}
+                    />
+                  </Link>
+                  <nav className="flex space-x-8" style={{ display: 'flex', gap: '2rem' }}>
+                    <Link 
+                      to="/home" 
+                      className={`transition-colors font-medium text-base relative group focus:outline-none ${isActive('/home') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+                      style={{ 
+                        color: isActive('/home') ? 'white' : '#9CA3AF', 
+                        fontWeight: '500', 
+                        textDecoration: 'none',
+                        outline: 'none',
+                        boxShadow: 'none'
+                      }}
+                    >
+                      Home
+                    </Link>
+                    <Link 
+                      to="/movies" 
+                      className={`transition-colors font-medium text-base relative group focus:outline-none ${isActive('/movies') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+                      style={{ 
+                        color: isActive('/movies') ? 'white' : '#9CA3AF', 
+                        fontWeight: '500', 
+                        textDecoration: 'none',
+                        outline: 'none',
+                        boxShadow: 'none'
+                      }}
+                    >
+                      Movies
+                    </Link>
+                  </nav>
+                </div>
+
+                {/* Desktop Search and User Controls */}
+                <div className="flex items-center space-x-4" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  {/* Search */}
+                  {showSearch && (
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search movies..."
+                        className="bg-netflix-gray-dark border border-netflix-gray text-white px-4 py-2 rounded-md focus:outline-none transition-all duration-200 w-64"
+                        style={{
+                          backgroundColor: '#222222',
+                          border: '1px solid #333333',
+                          color: 'white',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '0.375rem',
+                          width: '16rem'
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* User Avatar and Menu */}
+                  <div className="flex items-center space-x-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div className="w-8 h-8 bg-gradient-to-br from-netflix-red to-netflix-red-dark rounded-md flex items-center justify-center shadow-lg overflow-hidden" style={{
+                      width: '2rem',
+                      height: '2rem',
+                      background: 'linear-gradient(to bottom right, #E50914, #B20710)',
+                      borderRadius: '0.375rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                      overflow: 'hidden'
+                    }}>
+                      <img 
+                        src="/src/assets/profile_picture_user.png" 
+                        alt="Profile" 
+                        className="w-full h-full object-cover"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                    <button
+                      onClick={() => setShowCustomPathModal(true)}
+                      className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none"
+                      style={{ 
+                        color: '#D1D5DB', 
+                        background: 'none', 
+                        border: 'none', 
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        outline: 'none',
+                        boxShadow: 'none'
+                      }}
+                    >
+                      Custom Path
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none"
+                      style={{ 
+                        color: '#D1D5DB', 
+                        background: 'none', 
+                        border: 'none', 
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        outline: 'none',
+                        boxShadow: 'none'
+                      }}
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              // Mobile Navigation (≤ 875px)
+              <>
+                {/* Mobile Logo */}
+                <div className="flex items-center" style={{ display: 'flex', alignItems: 'center' }}>
+                  <Link to="/home" className="cursor-pointer hover:scale-105 transition-transform duration-200 focus:outline-none" style={{ 
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s',
+                    textDecoration: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    marginLeft: '0.5rem'
+                  }}>
+                    <img 
+                      src="/src/assets/logo_flix.png" 
+                      alt="FLIX" 
+                      className="h-9"
+                      style={{
+                        height: '2.25rem',
+                        width: 'auto'
+                      }}
+                    />
+                  </Link>
+                </div>
+
+                {/* Mobile Search and Hamburger */}
+                <div className="flex items-center space-x-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                {/* Mobile Search */}
+                {showSearch && (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search movies..."
+                      className="bg-netflix-gray-dark border border-netflix-gray text-white px-3 py-2 rounded-md focus:outline-none transition-all duration-200"
+                      style={{
+                        backgroundColor: '#222222',
+                        border: '1px solid #333333',
+                        color: 'white',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '0.375rem',
+                        width: '10rem',
+                        fontSize: '0.875rem'
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Hamburger Menu Button */}
+                <button
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="text-white hover:text-gray-300 transition-colors focus:outline-none"
+                  style={{ 
+                    color: 'white', 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    padding: '0.5rem'
                   }}
-                />
-              </Link>
-            <nav className="hidden md:flex space-x-8" style={{ display: 'flex', gap: '2rem' }}>
+                >
+                  <div className="space-y-1" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    <div style={{
+                      width: '1.5rem',
+                      height: '2px',
+                      backgroundColor: 'white',
+                      transition: 'all 0.3s'
+                    }}></div>
+                    <div style={{
+                      width: '1.5rem',
+                      height: '2px',
+                      backgroundColor: 'white',
+                      transition: 'all 0.3s'
+                    }}></div>
+                    <div style={{
+                      width: '1.5rem',
+                      height: '2px',
+                      backgroundColor: 'white',
+                      transition: 'all 0.3s'
+                    }}></div>
+                  </div>
+                </button>
+              </div>
+            </>
+            )}
+        </div>
+      </div>
+      
+      {/* Mobile Menu Dropdown */}
+      {isMobile && showMobileMenu && (
+        <div className="bg-netflix-gray-dark border-t border-netflix-gray" style={{
+          backgroundColor: '#1a1a1a',
+          borderTop: '1px solid #333333',
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          zIndex: 50
+        }}>
+          <div className="max-w-7xl mx-auto px-4 py-3" style={{ 
+            maxWidth: '80rem', 
+            margin: '0 auto', 
+            padding: '0.75rem 1rem' 
+          }}>
+            <div className="flex flex-col space-y-3" style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '0.75rem' 
+            }}>
               <Link 
                 to="/home" 
-                className={`transition-colors font-medium text-base relative group focus:outline-none ${isActive('/home') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+                onClick={() => setShowMobileMenu(false)}
+                className={`transition-colors font-medium text-base focus:outline-none ${isActive('/home') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
                 style={{ 
                   color: isActive('/home') ? 'white' : '#9CA3AF', 
                   fontWeight: '500', 
                   textDecoration: 'none',
                   outline: 'none',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
+                  padding: '0.5rem 0'
                 }}
               >
                 Home
               </Link>
               <Link 
                 to="/movies" 
-                className={`transition-colors font-medium text-base relative group focus:outline-none ${isActive('/movies') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
+                onClick={() => setShowMobileMenu(false)}
+                className={`transition-colors font-medium text-base focus:outline-none ${isActive('/movies') ? 'text-white' : 'text-gray-400 hover:text-gray-300'}`}
                 style={{ 
                   color: isActive('/movies') ? 'white' : '#9CA3AF', 
                   fontWeight: '500', 
                   textDecoration: 'none',
                   outline: 'none',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
+                  padding: '0.5rem 0'
                 }}
               >
                 Movies
               </Link>
-            </nav>
-          </div>
-
-          {/* Search and User Controls */}
-          <div className="flex items-center space-x-4" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            {/* Search */}
-            {showSearch && (
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search movies..."
-                  className="bg-netflix-gray-dark border border-netflix-gray text-white px-4 py-2 rounded-md focus:outline-none transition-all duration-200 w-64"
-                  style={{
-                    backgroundColor: '#222222',
-                    border: '1px solid #333333',
-                    color: 'white',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '0.375rem',
-                    width: '16rem'
-                  }}
-                />
-              </div>
-            )}
-
-
-
-            {/* User Avatar and Menu */}
-            <div className="flex items-center space-x-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div className="w-8 h-8 bg-gradient-to-br from-netflix-red to-netflix-red-dark rounded-md flex items-center justify-center shadow-lg overflow-hidden" style={{
-                width: '2rem',
-                height: '2rem',
-                background: 'linear-gradient(to bottom right, #E50914, #B20710)',
-                borderRadius: '0.375rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                overflow: 'hidden'
-              }}>
-                <img 
-                  src="/src/assets/profile_picture_user.png" 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
-                />
-              </div>
               <button
-                onClick={() => setShowCustomPathModal(true)}
-                className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none"
+                onClick={() => {
+                  setShowCustomPathModal(true);
+                  setShowMobileMenu(false);
+                }}
+                className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none text-left"
                 style={{ 
                   color: '#D1D5DB', 
                   background: 'none', 
@@ -249,14 +441,19 @@ const NavBar: React.FC<NavBarProps> = ({
                   fontWeight: '500',
                   cursor: 'pointer',
                   outline: 'none',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
+                  textAlign: 'left',
+                  padding: '0.5rem 0'
                 }}
               >
                 Custom Path
               </button>
               <button
-                onClick={handleLogout}
-                className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none"
+                onClick={() => {
+                  handleLogout();
+                  setShowMobileMenu(false);
+                }}
+                className="text-gray-300 hover:text-white transition-colors font-medium focus:outline-none text-left"
                 style={{ 
                   color: '#D1D5DB', 
                   background: 'none', 
@@ -264,7 +461,9 @@ const NavBar: React.FC<NavBarProps> = ({
                   fontWeight: '500',
                   cursor: 'pointer',
                   outline: 'none',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
+                  textAlign: 'left',
+                  padding: '0.5rem 0'
                 }}
               >
                 Sign Out
@@ -272,7 +471,7 @@ const NavBar: React.FC<NavBarProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      )}
       
       {/* Custom Path Modal */}
       {showCustomPathModal && (
