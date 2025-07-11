@@ -12,18 +12,19 @@ We vonden het omslachtig om films handmatig over te zetten of losse mediaspelers
 
 ## 🧱 Tech Stack
 
-### Frontend (Julius)
+### Frontend + Backend (Julius)
 - **React** met **Vite** voor snelle performance
 - **TailwindCSS** voor moderne styling
 - **React Router** voor paginanavigatie
 - **Video.js** voor een mooie, responsieve video player
 - **Cookie-based auth** voor sessiebeheer
-
-### Backend (Michiel)
 - **Node.js** met **Express**
-- Statische file serving vanuit lokale HDD (MP4-bestanden)
 - Auth-verificatie op login
 - Streaming via HTTP (optioneel uitbreidbaar met HLS/FFmpeg)
+
+### Hardware (Michiel)
+- Statische file serving vanuit lokale HDD (MP4-bestanden)
+- NAS opzetten
 
 ### Overig
 - Alle video’s worden lokaal gehost vanaf Michiel's machine/NAS
@@ -67,7 +68,7 @@ flix/
 │   ├── .env
 │   └── public/
 │       └── movies/
-│           └── <film.mp4>
+│           └── README.md
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -75,8 +76,10 @@ flix/
 │   │   │   ├── Header.tsx
 │   │   │   ├── MovieCard.tsx
 │   │   │   ├── NavBar.tsx
-│   │   │   └── PageTransition.tsx
+│   │   │   ├── PageTransition.tsx
+│   │   │   └── VideoPlayer.tsx
 │   │   ├── pages/
+│   │   │   ├── CustomPathInfo.tsx
 │   │   │   ├── Home.tsx
 │   │   │   ├── Login.tsx
 │   │   │   ├── Movies.tsx
@@ -85,21 +88,48 @@ flix/
 │   │   ├── hooks/
 │   │   │   └── useAuth.ts
 │   │   ├── utils/
-│   │   │   └── api.ts
+│   │   │   ├── api.ts
+│   │   │   └── recentMovies.ts
 │   │   ├── assets/
+│   │   │   ├── android-chrome-192x192.png
+│   │   │   ├── android-chrome-512x512.png
+│   │   │   ├── apple-touch-icon.png
+│   │   │   ├── favicon-16x16.png
+│   │   │   ├── favicon-32x32.png
+│   │   │   ├── favicon.ico
+│   │   │   ├── logo_flix.png
+│   │   │   ├── profile_picture.png
+│   │   │   ├── profile_picture_user.png
+│   │   │   └── react.svg
+│   │   ├── App.css
 │   │   ├── App.tsx
+│   │   ├── index.css
 │   │   ├── main.tsx
-│   │   └── index.css
+│   │   ├── styles.css
+│   │   └── vite-env.d.ts
 │   ├── public/
+│   │   └── vite.svg
+│   ├── eslint.config.js
+│   ├── index.html
 │   ├── package.json
-│   ├── vite.config.ts
+│   ├── postcss.config.js
+│   ├── README.md
 │   ├── tailwind.config.js
-│   └── tsconfig.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
 ├── .gitignore
 ├── CHANGELOG.md
+├── CUSTOM_PATH_FEATURE.md
+├── example_source.txt
 ├── GETTING_STARTED.md
+├── GOOGLE_DRIVE_SETUP.md
 ├── LICENSE.md
-└── README.md
+├── package.json
+├── README.md
+├── TESTING_GUIDE.md
+└── TODO.txt
 ```
 
 ---
@@ -144,7 +174,6 @@ movies/
 ## 💡 Mogelijke uitbreidingen
 
 - ✅ Favorieten opslaan
-- ⏯️ Laatst bekeken voortgang onthouden
 - 🧑‍🤝‍🧑 Gebruikersbeheer
 - 📱 Responsieve mobiele weergave
 - 💬 Recensies/reacties per film
@@ -153,8 +182,8 @@ movies/
 
 ## 👥 Auteurs
 
-- **Julius** – Frontend, UI/UX, authenticatie, routing
-- **Michiel** – Backend, media-opslag, streaming, hosting
+- **Julius** – Frontend, UI/UX, authenticatie, routing, Backend, streaming, hosting
+- **Michiel** – media-opslag, NAS
 
 📜 Licentie
 - 🔒 Dit project is uitsluitend bedoeld voor privégebruik. Distributie van auteursrechtelijk beschermd materiaal buiten je huishouden is in strijd met de wetgeving.
