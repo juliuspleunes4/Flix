@@ -165,7 +165,7 @@ const NavBar: React.FC<NavBarProps> = ({
                     textDecoration: 'none',
                     outline: 'none',
                     boxShadow: 'none',
-                    marginLeft: '0rem'
+                    marginLeft: window.innerWidth > 1200 ? '-1.0rem' : '0rem'
                   }}>
                     <img 
                       src="/src/assets/logo_flix.png" 
