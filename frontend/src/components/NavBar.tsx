@@ -475,17 +475,22 @@ const NavBar: React.FC<NavBarProps> = ({
       
       {/* Custom Path Modal */}
       {showCustomPathModal && (
-        <div className="fixed bg-netflix-gray-dark p-6 rounded-lg max-w-md w-full mx-4 shadow-2xl" style={{
+        <div className="fixed bg-netflix-gray-dark p-6 rounded-lg shadow-2xl" style={{
           position: 'fixed',
           top: '5.5rem',
+          left: '1rem',
           right: '1rem',
           backgroundColor: '#1a1a1a',
           padding: '1.5rem',
           borderRadius: '0.5rem',
+          width: 'auto',
           maxWidth: '28rem',
-          width: '28rem',
+          marginLeft: 'auto',
+          marginRight: '0',
           zIndex: 60,
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)'
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)',
+          maxHeight: 'calc(100vh - 7rem)',
+          overflowY: 'auto'
         }}>
           <h3 className="text-xl font-bold text-white mb-4" style={{
             fontSize: '1.25rem',
