@@ -8,7 +8,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": ["streaming", "movies", "self-hosted"],
-  "authors": ["Julius", "Michiel"],
+  "authors": ["J.J.G. Pleunes"],
   "license": "Private",
   "dependencies": {
     "express": "^4.18.2",

@@ -63,16 +63,16 @@ Use the Custom Path feature to scan movies from any location with rich metadata 
 C:\MyMovies\
 ├── Interstellar\
 │   ├── movie.mp4
-│   └── source.txt
+│   └── info.json
 ├── The Dark Knight\
 │   ├── movie.mkv
-│   └── source.txt
+│   └── info.json
 └── Arrival\
     ├── movie.avi
-    └── source.txt
+    └── info.json
 ```
 
-2. Create a `source.txt` file for each movie with JSON metadata:
+2. Create an `info.json` file for each movie with JSON metadata:
 ```json
 {
   "title": "Interstellar",
@@ -117,7 +117,7 @@ C:\MyMovies\
 
 2. **"No movies found"**
    - **Default movies**: Add movie files to `backend/public/movies/`
-   - **Custom Path movies**: Ensure each movie folder has a `source.txt` file with valid JSON
+   - **Custom Path movies**: Ensure each movie folder has an `info.json` file with valid JSON
    - Supported formats: .mp4, .mkv, .avi, .mov, .wmv
 
 3. **"Login failed"**
@@ -129,8 +129,8 @@ C:\MyMovies\
    - Check browser console for errors
 
 5. **Custom Path issues**
-   - **"No movies found"**: Check if each movie folder has a `source.txt` file
-   - **"JSON Error"**: Verify `source.txt` contains valid JSON format
+   - **"No movies found"**: Check if each movie folder has an `info.json` file
+   - **"JSON Error"**: Verify `info.json` contains valid JSON format
    - **"Path not found"**: Ensure the path exists and is accessible
    - **Movies disappear**: Custom Path movies are temporary and cleared on server restart
 

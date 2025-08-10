@@ -1,6 +1,6 @@
 # 🎬 Flix
 
-**Flix** is a self-hosted, minimalist web app for watching movies from your own collection — secure, fast, and without reliance on commercial platforms. Built for personal use by Julius (frontend + backend) and Michiel (hardware/backend), with the goal of streaming movies from your own storage to any device.
+**Flix** is a self-hosted, minimalist web app for watching movies from your own collection — secure, fast, and without reliance on commercial platforms. Built for personal use by J.J.G. Pleunes (frontend + backend), with the goal of streaming movies from your own storage to any device.
 
 ---
 
@@ -11,7 +11,7 @@ We found it cumbersome to manually transfer movies or use separate media players
 ---
 
 ## 🧱 Tech Stack
-### Frontend + Backend (Julius)
+### Frontend + Backend 
 - **React** with **Vite** for fast performance
 - **TailwindCSS** for modern styling
 - **React Router** for page navigation
@@ -20,13 +20,14 @@ We found it cumbersome to manually transfer movies or use separate media players
 - **Node.js** with **Express**
 - Auth verification on login
 - Streaming via HTTP (optionally extendable with HLS/FFmpeg)
+### Hardware (Planned Feature)
 
-### Hardware (Michiel)
+*NAS integration is not yet implemented, but support for connecting to a NAS is planned for a future release.*
 - Static file serving from local HDD (MP4 files)
 - NAS setup
 
 ### Other
-- All videos are hosted locally from Michiel's machine/NAS
+- All videos are hosted locally
 - No use of external APIs or cloud storage
 - Metadata can be added manually if desired
 
@@ -126,7 +127,7 @@ flix/
 │   ├── GOOGLE_DRIVE_SETUP.md
 │   ├── TESTING_GUIDE.md
 │   ├── TODO.txt
-│   └── example_source.txt
+│   └── example_info.json
 ├── .gitignore
 ├── LICENSE.md
 ├── package.json
@@ -154,7 +155,6 @@ cd frontend
 npm install
 npm run dev
 ```
-Make sure the frontend sends requests to the correct IP address of Michiel’s backend. This can be either local (http://localhost:3000) or via his external IP/network name.
 
 ## 🧪 Testsetup
 
@@ -179,7 +179,7 @@ Flix now supports a **Custom Path** feature that allows you to scan and add your
 ### ✨ Key features:
 - **Automatic detection** of video files in specified directories
 - **Support for multiple formats**: MP4, MKV, AVI, MOV, WMV
-- **Metadata from JSON**: Each movie must contain a `source.txt` file with movie information
+- **Metadata from JSON**: Each movie must contain an `info.json` file with movie information
 - **Persistent storage**: Scanned paths are stored locally for future sessions
 - **Responsive interface**: Works on both desktop and mobile devices
 
@@ -188,16 +188,16 @@ Flix now supports a **Custom Path** feature that allows you to scan and add your
 Your Custom Path/
 ├── Movie 1/
 │   ├── movie.mp4
-│   └── source.txt
+│   └── info.json
 ├── Movie 2/
 │   ├── movie.mkv
-│   └── source.txt
+│   └── info.json
 └── Movie 3/
     ├── movie.avi
-    └── source.txt
+    └── info.json
 ```
 
-### 📝 Example source.txt:
+### 📝 Example info.json:
 ```json
 {
   "title": "The Matrix",
@@ -222,12 +222,11 @@ Comprehensive documentation about setting up and using Custom Path is available 
 - 📱 Responsive mobile view
 - 💬 Reviews/comments per movie
 - 🎞️ Subtitles and multiple audio tracks
-- 📈 Server status dashboard for Michiel
+- 📈 Server status dashboard for NAS
 
 ## 👥 Authors
 
-- **Julius** – Frontend, UI/UX, authentication, routing, Backend, streaming, hosting
-- **Michiel** – Media storage, NAS
+- [Julius](https://linkedin.com/in/juliuspleunes) – Frontend, UI/UX, authentication, routing, Backend, streaming, hosting
 
 📜 License
 - 🔒 This project is intended for private use only. Distribution of copyrighted material outside your household is against the law.

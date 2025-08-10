@@ -81,26 +81,46 @@ const Login: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="pt-24 flex items-center justify-center min-h-screen" style={{ paddingTop: '6rem', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div className="max-w-md w-full mx-4" style={{ maxWidth: '28rem', width: '100%', margin: '0 1rem' }}>
+      <main className="flex items-center justify-center" style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        paddingTop: 'max(1rem, min(5rem, 8vh))',
+        paddingBottom: 'max(1rem, min(2rem, 4vh))'
+      }}>
+        <div className="max-w-md w-full mx-4" style={{ 
+          maxWidth: '28rem', 
+          width: '100%', 
+          margin: '0 1rem',
+          maxHeight: 'calc(100vh - max(2rem, min(7rem, 12vh)))',
+          overflowY: 'auto'
+        }}>
           {/* Hero Section */}
-          <div className="text-center mb-12 animate-fade-in" style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <div className="mb-8" style={{ marginBottom: '2rem' }}>
-              <div className="text-6xl mb-6" style={{ fontSize: '4rem', marginBottom: '1.5rem', opacity: 0.8 }}>🎬</div>
+          <div className="text-center animate-fade-in" style={{ 
+            textAlign: 'center', 
+            marginBottom: 'max(1rem, min(2rem, 3vh))'
+          }}>
+            <div style={{ marginBottom: 'max(0.5rem, min(1.5rem, 2vh))' }}>
+              <div style={{ 
+                fontSize: 'max(2rem, min(3rem, 5vh))', 
+                marginBottom: 'max(0.5rem, min(1rem, 1.5vh))', 
+                opacity: 0.8 
+              }}>🎬</div>
             </div>
-            <h2 className="text-4xl font-bold text-white mb-4" style={{
-              fontSize: '2.25rem',
+            <h2 style={{
+              fontSize: 'max(1.25rem, min(1.875rem, 4vh))',
               fontWeight: 'bold',
               color: 'white',
-              marginBottom: '1rem',
+              marginBottom: 'max(0.5rem, min(0.75rem, 1vh))',
               letterSpacing: '-0.02em'
             }}>
               Welcome Back
             </h2>
-            <p className="text-lg text-gray-400 mb-8" style={{
-              fontSize: '1.125rem',
+            <p style={{
+              fontSize: 'max(0.875rem, min(1rem, 2vh))',
               color: '#9CA3AF',
-              marginBottom: '2rem',
+              marginBottom: 'max(1rem, min(1.5rem, 2vh))',
               fontWeight: '400'
             }}>
               Sign in to access your personal movie library
@@ -108,22 +128,26 @@ const Login: React.FC = () => {
           </div>
 
           {/* Login Form Card */}
-          <div className="bg-netflix-gray-dark rounded-xl p-8 shadow-2xl border border-netflix-gray/20 backdrop-blur-sm" style={{
+          <div className="bg-netflix-gray-dark rounded-xl shadow-2xl border border-netflix-gray/20 backdrop-blur-sm" style={{
             backgroundColor: '#1a1a1a',
             borderRadius: '0.75rem',
-            padding: '2rem',
+            padding: 'max(1rem, min(2rem, 4vh))',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
             border: '1px solid rgba(51, 51, 51, 0.2)',
             backdropFilter: 'blur(4px)'
           }}>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <form onSubmit={handleSubmit} style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 'max(1rem, min(1.5rem, 2vh))' 
+            }}>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-3" style={{
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300" style={{
                   display: 'block',
-                  fontSize: '0.875rem',
+                  fontSize: 'max(0.75rem, min(0.875rem, 1.5vh))',
                   fontWeight: '500',
                   color: '#D1D5DB',
-                  marginBottom: '0.75rem'
+                  marginBottom: 'max(0.5rem, min(0.75rem, 1vh))'
                 }}>
                   Password
                 </label>
@@ -137,12 +161,12 @@ const Login: React.FC = () => {
                   className="w-full px-4 py-4 bg-netflix-gray-dark border border-netflix-gray rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-netflix-red focus:border-netflix-red transition-all duration-200 text-lg"
                   style={{
                     width: '100%',
-                    padding: '1rem 1.5rem',
+                    padding: 'max(0.75rem, min(1rem, 2vh)) max(1rem, min(1.5rem, 2.5vh))',
                     backgroundColor: '#222222',
                     border: '1px solid #333333',
                     borderRadius: '0.5rem',
                     color: 'white',
-                    fontSize: '1rem',
+                    fontSize: 'max(0.875rem, min(1rem, 1.8vh))',
                     outline: 'none',
                     transition: 'all 0.2s ease',
                     boxSizing: 'border-box'
@@ -153,17 +177,23 @@ const Login: React.FC = () => {
               </div>
 
               {error && (
-                <div className="bg-netflix-red/10 border border-netflix-red/30 text-netflix-red px-4 py-3 rounded-lg backdrop-blur-sm animate-slide-up" style={{
+                <div className="bg-netflix-red/10 border border-netflix-red/30 text-netflix-red rounded-lg backdrop-blur-sm animate-slide-up" style={{
                   backgroundColor: 'rgba(229, 9, 20, 0.1)',
                   border: '1px solid rgba(229, 9, 20, 0.3)',
                   color: '#E50914',
-                  padding: '0.75rem 1rem',
+                  padding: 'max(0.5rem, min(0.75rem, 1.5vh)) max(0.75rem, min(1rem, 2vh))',
                   borderRadius: '0.5rem',
                   backdropFilter: 'blur(4px)'
                 }}>
                   <div className="flex items-center" style={{ display: 'flex', alignItems: 'center' }}>
-                    <span className="mr-2 text-lg" style={{ marginRight: '0.5rem', fontSize: '1.125rem' }}>⚠️</span>
-                    <span className="font-medium" style={{ fontWeight: '500' }}>{error}</span>
+                    <span style={{ 
+                      marginRight: '0.5rem', 
+                      fontSize: 'max(1rem, min(1.125rem, 2vh))' 
+                    }}>⚠️</span>
+                    <span style={{ 
+                      fontWeight: '500',
+                      fontSize: 'max(0.75rem, min(0.875rem, 1.5vh))'
+                    }}>{error}</span>
                   </div>
                 </div>
               )}
@@ -171,16 +201,16 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading || !password.trim()}
-                className="w-full bg-netflix-red hover:bg-netflix-red-dark disabled:bg-netflix-gray disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg text-lg tracking-wide"
+                className="w-full bg-netflix-red hover:bg-netflix-red-dark disabled:bg-netflix-gray disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg tracking-wide"
                 style={{
                   width: '100%',
                   backgroundColor: isLoading || !password.trim() ? '#4B5563' : '#E50914',
                   color: 'white',
                   fontWeight: '600',
-                  padding: '1rem 1.5rem',
+                  padding: 'max(0.75rem, min(1rem, 2vh)) max(1rem, min(1.5rem, 2.5vh))',
                   borderRadius: '0.5rem',
                   border: 'none',
-                  fontSize: '1rem',
+                  fontSize: 'max(0.875rem, min(1rem, 1.8vh))',
                   letterSpacing: '0.025em',
                   cursor: isLoading || !password.trim() ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s ease',
@@ -189,9 +219,9 @@ const Login: React.FC = () => {
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3" style={{
-                      width: '1.25rem',
-                      height: '1.25rem',
+                    <div style={{
+                      width: 'max(1rem, min(1.25rem, 2vh))',
+                      height: 'max(1rem, min(1.25rem, 2vh))',
                       border: '2px solid white',
                       borderTopColor: 'transparent',
                       borderRadius: '50%',
@@ -207,23 +237,32 @@ const Login: React.FC = () => {
             </form>
 
             {/* Additional Info */}
-            <div className="mt-8 text-center" style={{ marginTop: '2rem', textAlign: 'center' }}>
+            <div style={{ 
+              marginTop: 'max(1rem, min(1.5rem, 2vh))', 
+              textAlign: 'center' 
+            }}>
               <div className="flex items-center justify-center space-x-6 text-sm text-gray-400" style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                gap: '1.5rem',
-                fontSize: '0.875rem',
+                gap: 'max(1rem, min(1.5rem, 2vh))',
+                fontSize: 'max(0.75rem, min(0.875rem, 1.5vh))',
                 color: '#9CA3AF'
               }}>
                 <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <svg className="w-4 h-4 text-green-500" width="16" height="16" fill="#10B981" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-green-500" style={{
+                    width: 'max(0.875rem, min(1rem, 1.5vh))',
+                    height: 'max(0.875rem, min(1rem, 1.5vh))'
+                  }} fill="#10B981" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   <span>Secure Access</span>
                 </div>
                 <div className="flex items-center space-x-2" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <svg className="w-4 h-4 text-netflix-red" width="16" height="16" fill="#E50914" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 text-netflix-red" style={{
+                    width: 'max(0.875rem, min(1rem, 1.5vh))',
+                    height: 'max(0.875rem, min(1rem, 1.5vh))'
+                  }} fill="#E50914" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clipRule="evenodd" />
                   </svg>
                   <span>HD Streaming</span>
@@ -233,14 +272,17 @@ const Login: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center mt-8 text-gray-500 text-sm" style={{ 
+          <div style={{ 
             textAlign: 'center', 
-            marginTop: '2rem', 
+            marginTop: 'max(1rem, min(1.5rem, 2vh))', 
             color: '#6B7280', 
-            fontSize: '0.875rem' 
+            fontSize: 'max(0.75rem, min(0.875rem, 1.5vh))' 
           }}>
-            <p className="mb-2" style={{ marginBottom: '0.5rem' }}>For personal use only</p>
-            <p className="text-xs opacity-75" style={{ fontSize: '0.75rem', opacity: 0.75 }}>FLIX © 2025</p>
+            <p style={{ marginBottom: '0.5rem' }}>For personal use only</p>
+            <p style={{ 
+              fontSize: 'max(0.625rem, min(0.75rem, 1.2vh))', 
+              opacity: 0.75 
+            }}>FLIX © 2025</p>
           </div>
         </div>
       </main>
