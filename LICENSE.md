@@ -2,13 +2,13 @@
 
 ## Private Use License
 
-Copyright (c) 2025 Michiel Dirks & Julius Pleunes
+Copyright (c) 2025 Julius Pleunes
 
 This software is developed for **private, personal use only** and is not intended for public distribution or commercial use.
 
 ### Terms and Conditions
 
-1. **Private Use Only**: This software is exclusively for use by the authors (Julius and Michiel) and their immediate family/friends with explicit permission.
+1. **Private Use Only**: This software is exclusively for use by individuals and their immediate family/friends with explicit permission.
 
 2. **No Distribution**: You may not distribute, publish, or make this software available to third parties without explicit written permission from the authors.
 
