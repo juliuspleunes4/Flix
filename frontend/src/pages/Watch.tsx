@@ -13,6 +13,7 @@ const Watch: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [recommendedMovies, setRecommendedMovies] = useState<Movie[]>([]);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
+  const [showMovieInfo, setShowMovieInfo] = useState(true); // Start with true to test
 
   useEffect(() => {
     if (id) {
@@ -200,20 +201,21 @@ const Watch: React.FC = () => {
 
       {/* Video Player */}
       <div className="relative w-full bg-black flex flex-col items-start justify-start" style={{ paddingTop: '6rem', paddingLeft: '1rem' }}>
-        <div className="w-full max-w-[64rem] max-h-[70vh] aspect-video">
+        <div className="relative w-full max-w-[64rem] max-h-[70vh] aspect-video">
           {currentMovie.source === 'gdrive' ? (
             // Google Drive iframe player
             <iframe
               src={currentMovie.url}
-              className="w-full h-full"
+              className={`w-full h-full transition-all duration-500 ${showMovieInfo ? 'brightness-50' : 'brightness-100'}`}
               allow="autoplay; encrypted-media"
               allowFullScreen
               style={{
                 border: 'none',
-                filter: 'contrast(1.1) brightness(1.05)',
+                filter: `contrast(1.1) ${showMovieInfo ? 'brightness(0.525)' : 'brightness(1.05)'}`,
                 maxWidth: '100%',
                 maxHeight: '100%',
-                aspectRatio: '16/9'
+                aspectRatio: '16/9',
+                transition: 'filter 0.5s ease'
               }}
               onLoad={() => console.log('✅ Google Drive iframe loaded')}
               onError={() => {
@@ -227,7 +229,7 @@ const Watch: React.FC = () => {
               ref={videoRef}
               controls
               autoPlay
-              className="w-full h-full object-contain"
+              className={`w-full h-full object-contain transition-all duration-500 ${showMovieInfo ? 'brightness-50' : 'brightness-100'}`}
               onError={(e) => {
                 console.error('❌ Video player error:', e);
                 const streamUrl = currentMovie.source === 'custom' 
@@ -249,13 +251,20 @@ const Watch: React.FC = () => {
               onLoadedMetadata={() => console.log('✅ Video metadata loaded')}
               onProgress={() => console.log('📊 Video loading progress')}
               onWaiting={() => console.log('⏳ Video waiting for data')}
-              onPlaying={() => console.log('▶️ Video is playing')}
-              onPause={() => console.log('⏸️ Video paused')}
+              onPlaying={() => {
+                console.log('▶️ Video is playing');
+                setShowMovieInfo(false);
+              }}
+              onPause={() => {
+                console.log('⏸️ Video paused');
+                setShowMovieInfo(true);
+              }}
               style={{
-                filter: 'contrast(1.1) brightness(1.05)',
+                filter: `contrast(1.1) ${showMovieInfo ? 'brightness(0.525)' : 'brightness(1.05)'}`,
                 maxWidth: '100%',
                 maxHeight: '100%',
-                aspectRatio: '16/9'
+                aspectRatio: '16/9',
+                transition: 'filter 0.5s ease'
               }}
             >
               <source
@@ -274,55 +283,56 @@ const Watch: React.FC = () => {
               </p>
             </video>
           )}
-        </div>
-
-        {/* Movie Info Overlay */}
-        <div className="w-full mt-6">
-          <div className="space-y-4">
-            {/* Title */}
-            <h1 className="text-lg lg:text-xl font-bold text-white leading-tight">
-              {currentMovie.title}
-            </h1>
-            {/* Description */}
-            {currentMovie.description && currentMovie.description !== `Local movie: ${currentMovie.title.replace(/\s+/g, ' ')}` && (
-              <p className="text-gray-300 leading-relaxed text-sm lg:text-base break-words" style={{ maxWidth: '64rem' }}>
-                {currentMovie.description}
-              </p>
-            )}
-            {/* Movie Details */}
-            <div>
-              {currentMovie.year && (
-                <div className="flex items-center text-white text-xs">
-                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
-                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                  </svg>
-                  {currentMovie.year}
+          
+          {/* Movie Info Overlay - positioned relative to video player */}
+          <div className={`absolute top-1/2 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-50 transition-all duration-500 ease-in-out pointer-events-none transform -translate-y-1/2 ${showMovieInfo ? 'opacity-100 visible' : 'opacity-0 invisible'}`} style={{ left: '30px', width: '45%' }}>
+            <div className="w-full p-6 pointer-events-auto" style={{ padding: 'clamp(0.25rem, 2vw, 1.5rem)' }}>
+              <div className="space-y-4" style={{ gap: 'clamp(0.2rem, 1vw, 1rem)' }}>
+                <h1 className="font-bold text-white leading-tight" style={{ fontSize: 'clamp(0.6rem, 2.5vw, 1.25rem)' }}>
+                  {currentMovie.title}
+                </h1>
+                {/* Description */}
+                {currentMovie.description && currentMovie.description !== `Local movie: ${currentMovie.title.replace(/\s+/g, ' ')}` && (
+                  <p className="text-gray-300 leading-relaxed break-words" style={{ fontSize: 'clamp(0.5rem, 1.8vw, 1rem)' }}>
+                    {currentMovie.description}
+                  </p>
+                )}
+                {/* Movie Details */}
+                <div>
+                  {currentMovie.year && (
+                    <div className="flex items-center text-white" style={{ fontSize: 'clamp(0.4rem, 1.2vw, 0.75rem)' }}>
+                      <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: 'clamp(10px, 1.5vw, 24px)', height: 'clamp(10px, 1.5vw, 24px)', marginRight: 'clamp(3px, 1vw, 12px)' }}>
+                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                      </svg>
+                      {currentMovie.year}
+                    </div>
+                  )}
+                  {currentMovie.rating && currentMovie.rating !== 'Not Rated' && (
+                    <div className="flex items-center text-gray-300" style={{ fontSize: 'clamp(0.4rem, 1.2vw, 0.75rem)' }}>
+                      <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: 'clamp(10px, 1.5vw, 24px)', height: 'clamp(10px, 1.5vw, 24px)', marginRight: 'clamp(3px, 1vw, 12px)' }}>
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {currentMovie.rating}
+                    </div>
+                  )}
+                  {currentMovie.duration && currentMovie.duration !== 'Unknown' && (
+                    <div className="flex items-center text-gray-300" style={{ fontSize: 'clamp(0.4rem, 1.2vw, 0.75rem)' }}>
+                      <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: 'clamp(10px, 1.5vw, 24px)', height: 'clamp(10px, 1.5vw, 24px)', marginRight: 'clamp(3px, 1vw, 12px)' }}>
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                      </svg>
+                      {currentMovie.duration}
+                    </div>
+                  )}
+                  {currentMovie.quality && currentMovie.quality !== 'Unknown' && (
+                    <div className="flex items-center text-gray-300" style={{ fontSize: 'clamp(0.4rem, 1.2vw, 0.75rem)' }}>
+                      <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: 'clamp(10px, 1.5vw, 24px)', height: 'clamp(10px, 1.5vw, 24px)', marginRight: 'clamp(3px, 1vw, 12px)' }}>
+                        <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                      </svg>
+                      {currentMovie.quality}
+                    </div>
+                  )}
                 </div>
-              )}
-              {currentMovie.rating && currentMovie.rating !== 'Not Rated' && (
-                <div className="flex items-center text-gray-300 text-xs">
-                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  {currentMovie.rating}
-                </div>
-              )}
-              {currentMovie.duration && currentMovie.duration !== 'Unknown' && (
-                <div className="flex items-center text-gray-300 text-xs">
-                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
-                  {currentMovie.duration}
-                </div>
-              )}
-              {currentMovie.quality && currentMovie.quality !== 'Unknown' && (
-                <div className="flex items-center text-gray-300 text-xs">
-                  <svg className="text-gray-400" fill="currentColor" viewBox="0 0 20 20" style={{ width: '24px', height: '24px', marginRight: '12px' }}>
-                    <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                  </svg>
-                  {currentMovie.quality}
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
