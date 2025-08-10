@@ -38,7 +38,10 @@ The frontend will run on `http://localhost:5173`
 
 ### 3. Add Movies
 
-Place your movie files (.mp4, .mkv, .avi) in:
+You have two options for adding movies to FLIX:
+
+#### Option A: Default Movies Directory (Simple)
+Place your movie files (.mp4, .mkv, .avi, .mov, .wmv) in:
 ```
 backend/public/movies/
 ```
@@ -47,9 +50,45 @@ Example structure:
 ```
 backend/public/movies/
 ├── Interstellar.mp4
-├── The_Dark_Knight.mp4
-└── Arrival.mp4
+├── The_Dark_Knight.mkv
+└── Arrival.avi
 ```
+
+#### Option B: Custom Path Feature (Advanced)
+Use the Custom Path feature to scan movies from any location with rich metadata support.
+
+**Setup Custom Path movies:**
+1. Create a folder structure like this:
+```
+C:\MyMovies\
+├── Interstellar\
+│   ├── movie.mp4
+│   └── source.txt
+├── The Dark Knight\
+│   ├── movie.mkv
+│   └── source.txt
+└── Arrival\
+    ├── movie.avi
+    └── source.txt
+```
+
+2. Create a `source.txt` file for each movie with JSON metadata:
+```json
+{
+  "title": "Interstellar",
+  "description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+  "year": 2014,
+  "genre": ["Drama", "Sci-Fi"],
+  "duration": "169 min",
+  "rating": "PG-13",
+  "quality": "1080p",
+  "stars": 4.8
+}
+```
+
+3. In FLIX, click "Custom Path" → Enter your folder path → Click "Scan"
+
+**Supported video formats:** .mp4, .mkv, .avi, .mov, .wmv
 
 ### 4. Access Flix
 
@@ -77,8 +116,9 @@ backend/public/movies/
    - Check if `.env` file exists in backend folder
 
 2. **"No movies found"**
-   - Add movie files to `backend/public/movies/`
-   - Supported formats: .mp4, .mkv, .avi
+   - **Default movies**: Add movie files to `backend/public/movies/`
+   - **Custom Path movies**: Ensure each movie folder has a `source.txt` file with valid JSON
+   - Supported formats: .mp4, .mkv, .avi, .mov, .wmv
 
 3. **"Login failed"**
    - Check password in `backend/.env`
@@ -87,6 +127,12 @@ backend/public/movies/
 4. **Video won't play**
    - Ensure video file is in correct format
    - Check browser console for errors
+
+5. **Custom Path issues**
+   - **"No movies found"**: Check if each movie folder has a `source.txt` file
+   - **"JSON Error"**: Verify `source.txt` contains valid JSON format
+   - **"Path not found"**: Ensure the path exists and is accessible
+   - **Movies disappear**: Custom Path movies are temporary and cleared on server restart
 
 ### Port Configuration
 
@@ -135,6 +181,26 @@ server: {
 - Only share access with trusted family/friends
 - Consider setting up VPN access for remote viewing
 - This is designed for personal use only
+
+## Key Features
+
+### 🎬 Movie Management
+- **Default Movies**: Simple file-based movie storage
+- **Custom Path**: Advanced movie organization with metadata support
+- **Multiple Formats**: Support for MP4, MKV, AVI, MOV, WMV
+- **Auto-Detection**: Automatic movie discovery and loading
+- **Persistent Storage**: Custom paths are saved for future sessions
+
+### 🔐 Security & Access
+- Password-protected access
+- Cookie-based authentication
+- Personal use design
+
+### 📱 User Experience
+- Responsive design (desktop & mobile)
+- Search functionality
+- Clean, Netflix-like interface
+- Information pages with comprehensive documentation
 
 ## Tech Stack Summary
 
