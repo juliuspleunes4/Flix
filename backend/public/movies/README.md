@@ -51,7 +51,7 @@ Your Custom Directory/
 
 ## 🔗 More Information
 
-For comprehensive setup guides and troubleshooting, visit the Custom Path information page in the FLIX web interface at `/custom-path-info`.
+For comprehensive setup guides and troubleshooting, visit the Custom Path information page in the FLIX web interface at `/custom-path-info` or visit the CUSTOM_PATH_FEATURE.md file.
 
 ---
 
