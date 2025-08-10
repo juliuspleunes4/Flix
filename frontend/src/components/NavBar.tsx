@@ -538,7 +538,7 @@ const NavBar: React.FC<NavBarProps> = ({
             marginBottom: '1rem',
             fontSize: '0.875rem'
           }}>
-            Enter the path to scan for movies. Each movie should be in its own folder with a source.txt file containing movie information.
+            Enter the path to scan for movies. Each movie should be in its own folder with an info.json file containing movie information.
           </p>
           
           <input

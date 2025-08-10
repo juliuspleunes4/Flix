@@ -11,23 +11,23 @@
 
 3. In each subfolder, place:
    - A video file (for example `movie.mp4`)
-   - A `source.txt` file
+   - An `info.json` file
 
 **Example structure:**
 ```
 D:\Movies\
 ├── TestMovie1\
 │   ├── test1.mp4
-│   └── source.txt
+│   └── info.json
 ├── TestMovie2\
 │   ├── test2.mkv
-│   └── source.txt
+│   └── info.json
 └── TestMovie3\
     ├── test3.avi
-    └── source.txt
+    └── info.json
 ```
 
-4. Each `source.txt` should contain this content:
+4. Each `info.json` should contain this content:
 
 ```json
 {
@@ -58,7 +58,7 @@ D:\Movies\
 If you get 0 movies, check in the server console:
 1. Is the path being scanned correctly?
 2. Are the subfolders being found?
-3. Are video files and source.txt being found?
+3. Are video files and info.json being found?
 4. Are there JSON parsing errors?
 
 ## Expected Console Output
@@ -67,9 +67,9 @@ If you get 0 movies, check in the server console:
 🔍 Scanning custom path: D:\Movies
 📁 Found 3 items in directory: ['TestMovie1', 'TestMovie2', 'TestMovie3']
 📂 Processing item: TestMovie1, isDirectory: true
-📄 Directory contents for TestMovie1: ['test1.mp4', 'source.txt']
+📄 Directory contents for TestMovie1: ['test1.mp4', 'info.json']
 🎬 Movie file found: test1.mp4
-📝 Source file found: source.txt
+📝 Source file found: info.json
 ✅ Added movie: Test Movie 1
 🎯 Total movies found: 3
 ```
@@ -77,7 +77,7 @@ If you get 0 movies, check in the server console:
 ## Expected Results
 
 - The movie appears in both Home and Movies pages
-- The metadata from source.txt is displayed correctly
+- The metadata from info.json is displayed correctly
 - The movie is playable via the video player
 - Source is shown as "Custom Path" in the player
 
@@ -85,8 +85,8 @@ If you get 0 movies, check in the server console:
 
 If the movie doesn't appear, check:
 - **Folder structure**: Each movie must be in its own subfolder
-- **File names**: `source.txt` must be named exactly like this (case-sensitive)
-- **JSON format**: The source.txt must contain valid JSON
+- **File names**: `info.json` must be named exactly like this (case-sensitive)
+- **JSON format**: The info.json must contain valid JSON
 - **Video files**: Supported formats: .mp4, .mkv, .avi, .mov, .wmv
 - **Accessibility**: Both files must be readable by the server
 - **Console output**: Check the server console for specific error messages
@@ -94,6 +94,6 @@ If the movie doesn't appear, check:
 ## Common Errors
 
 1. **Movies directly in main folder**: Movies must be in subfolders
-2. **No source.txt**: Each movie folder must contain a source.txt
+2. **No info.json**: Each movie folder must contain an info.json
 3. **Incorrect JSON**: Check if the JSON syntax is correct
-4. **Case sensitivity**: `source.txt` must be written exactly like this
+4. **Case sensitivity**: `info.json` must be written exactly like this

@@ -7,7 +7,7 @@ This feature allows you to load movies from a custom folder into FLIX.
 1. **Folder Structure**: Each movie must be in its own subfolder
 2. **Required Files**: 
    - A video file (.mp4, .mkv, .avi, .mov, .wmv)
-   - A `source.txt` file with movie metadata
+   - An `info.json` file with movie metadata
 
 ## Example Folder Structure
 
@@ -15,18 +15,18 @@ This feature allows you to load movies from a custom folder into FLIX.
 C:\CustomMovies\
 ├── Movie1\
 │   ├── movie1.mp4
-│   └── source.txt
+│   └── info.json
 ├── Movie2\
 │   ├── movie2.mkv
-│   └── source.txt
+│   └── info.json
 └── Movie3\
     ├── movie3.avi
-    └── source.txt
+    └── info.json
 ```
 
-## source.txt Format
+## info.json Format
 
-The `source.txt` file must contain a JSON object with the following information:
+The `info.json` file must contain a JSON object with the following information:
 
 ```json
 {
@@ -60,17 +60,17 @@ The `source.txt` file must contain a JSON object with the following information:
 1. Click the "Custom Path" button next to "Sign Out" in the navbar
 2. Enter the path to your custom movies folder
 3. Click "Scan" to scan the folder
-4. Movies with a valid `source.txt` file will be added to your library
+4. Movies with a valid `info.json` file will be added to your library
 
 ## Important
 
-- **Only movies with a `source.txt` file will be shown**
-- The `source.txt` must contain valid JSON
+- **Only movies with an `info.json` file will be shown**
+- The `info.json` must contain valid JSON
 - Movies are loaded temporarily (will disappear on server restart)
 - Use "Clear" to remove all custom movies
 
 ## Troubleshooting
 
-- **No movies found**: Check if each movie folder has a `source.txt` file
-- **JSON Error**: Check if the `source.txt` contains valid JSON
+- **No movies found**: Check if each movie folder has an `info.json` file
+- **JSON Error**: Check if the `info.json` contains valid JSON
 - **Path not found**: Check if the entered path is correct and accessible

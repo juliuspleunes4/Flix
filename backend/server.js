@@ -572,7 +572,7 @@ async function scanCustomPath(customPath) {
       console.log(`📂 Processing item: ${item}, isDirectory: ${stats.isDirectory()}`);
       
       if (stats.isDirectory()) {
-        // Check if this directory contains a movie file and source.txt
+        // Check if this directory contains a movie file and info.json
         const dirContents = fs.readdirSync(itemPath);
         console.log(`📄 Directory contents for ${item}:`, dirContents);
         
@@ -581,20 +581,20 @@ async function scanCustomPath(customPath) {
           return supportedFormats.includes(ext);
         });
         
-        // Look for source.txt (case-insensitive) or source.txt.txt (common Windows issue)
+        // Look for info.json (case-insensitive)
         const sourceFile = dirContents.find(file => {
           const fileName = file.toLowerCase();
-          return fileName === 'source.txt' || fileName === 'source.txt.txt';
+          return fileName === 'info.json';
         });
         
         console.log(`🎬 Movie file found: ${movieFile}`);
-        console.log(`📝 Source file found: ${sourceFile}`);
+        console.log(`📝 Info file found: ${sourceFile}`);
         
-        // Only include if both movie file and source.txt exist
+        // Only include if both movie file and info.json exist
         if (movieFile && sourceFile) {
           try {
             const sourceContent = fs.readFileSync(path.join(itemPath, sourceFile), 'utf8');
-            console.log(`📖 Source content for ${item}:`, sourceContent);
+            console.log(`📖 Info content for ${item}:`, sourceContent);
             const movieData = JSON.parse(sourceContent);
             
             const movieStats = fs.statSync(path.join(itemPath, movieFile));
@@ -621,11 +621,11 @@ async function scanCustomPath(customPath) {
             movies.push(movie);
             console.log(`✅ Added movie: ${movie.title}`);
           } catch (error) {
-            console.error(`❌ Error reading source.txt for ${item}:`, error);
-            // Skip this movie if source.txt is invalid
+            console.error(`❌ Error reading info.json for ${item}:`, error);
+            // Skip this movie if info.json is invalid
           }
         } else {
-          console.log(`⚠️ Skipping ${item} - missing movie file or source.txt`);
+          console.log(`⚠️ Skipping ${item} - missing movie file or info.json`);
         }
       }
     }

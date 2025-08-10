@@ -127,7 +127,7 @@ flix/
 │   ├── GOOGLE_DRIVE_SETUP.md
 │   ├── TESTING_GUIDE.md
 │   ├── TODO.txt
-│   └── example_source.txt
+│   └── example_info.json
 ├── .gitignore
 ├── LICENSE.md
 ├── package.json
@@ -179,7 +179,7 @@ Flix now supports a **Custom Path** feature that allows you to scan and add your
 ### ✨ Key features:
 - **Automatic detection** of video files in specified directories
 - **Support for multiple formats**: MP4, MKV, AVI, MOV, WMV
-- **Metadata from JSON**: Each movie must contain a `source.txt` file with movie information
+- **Metadata from JSON**: Each movie must contain an `info.json` file with movie information
 - **Persistent storage**: Scanned paths are stored locally for future sessions
 - **Responsive interface**: Works on both desktop and mobile devices
 
@@ -188,16 +188,16 @@ Flix now supports a **Custom Path** feature that allows you to scan and add your
 Your Custom Path/
 ├── Movie 1/
 │   ├── movie.mp4
-│   └── source.txt
+│   └── info.json
 ├── Movie 2/
 │   ├── movie.mkv
-│   └── source.txt
+│   └── info.json
 └── Movie 3/
     ├── movie.avi
-    └── source.txt
+    └── info.json
 ```
 
-### 📝 Example source.txt:
+### 📝 Example info.json:
 ```json
 {
   "title": "The Matrix",

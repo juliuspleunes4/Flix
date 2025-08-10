@@ -211,7 +211,7 @@ const Home: React.FC<HomeProps> = ({ searchQuery, refreshTrigger }) => {
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  Refresh - Recently Watched
+                  Refresh
                 </button>
                 <Link
                   to="/movies"

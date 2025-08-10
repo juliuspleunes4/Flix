@@ -35,7 +35,7 @@ For more advanced organization with metadata support:
 
 1. **Navigate to Custom Path** in the FLIX interface
 2. **Set up your own directory structure** with movies in individual folders
-3. **Add metadata files** (`source.txt`) for rich movie information
+3. **Add metadata files** (`info.json`) for rich movie information
 4. **Access full documentation** via the "?" button in Custom Path modal or visit `/custom-path-info`
 
 ### Custom Path Example Structure:
@@ -43,10 +43,10 @@ For more advanced organization with metadata support:
 Your Custom Directory/
 ├── Movie 1/
 │   ├── movie.mp4
-│   └── source.txt (JSON metadata)
+│   └── info.json (JSON metadata)
 ├── Movie 2/
 │   ├── movie.mkv
-│   └── source.txt (JSON metadata)
+│   └── info.json (JSON metadata)
 ```
 
 ## 🔗 More Information

@@ -89,16 +89,16 @@ const CustomPathInfo: React.FC = () => {
                   <div>Your Custom Path/</div>
                   <div>├── Movie 1/</div>
                   <div>│   ├── movie.mp4</div>
-                  <div>│   └── source.txt</div>
+                  <div>│   └── info.json</div>
                   <div>├── Movie 2/</div>
                   <div>│   ├── movie.mkv</div>
-                  <div>│   └── source.txt</div>
+                  <div>│   └── info.json</div>
                   <div>├── Movie 3/</div>
                   <div>│   ├── movie.avi</div>
-                  <div>│   └── source.txt</div>
+                  <div>│   └── info.json</div>
                   <div>└── Another Movie/</div>
                   <div>    ├── film.mov</div>
-                  <div>    └── source.txt</div>
+                  <div>    └── info.json</div>
                 </div>
                 <div style={{
                   backgroundColor: '#1f2937',
@@ -108,7 +108,7 @@ const CustomPathInfo: React.FC = () => {
                   borderLeft: '4px solid #3b82f6'
                 }}>
                   <strong>Important:</strong> Each movie must be in its own folder, and each folder must contain 
-                  both a video file and a source.txt file with movie information.
+                  both a video file and an info.json file with movie information.
                 </div>
               </section>
 
@@ -150,15 +150,15 @@ const CustomPathInfo: React.FC = () => {
                   fontWeight: '600', 
                   marginBottom: '1rem' 
                 }}>
-                  The source.txt File
+                  The info.json File
                 </h2>
                 <p style={{ marginBottom: '1rem' }}>
-                  Each movie folder must contain a <code style={{ 
+                  Each movie folder must contain an <code style={{ 
                     backgroundColor: '#374151', 
                     padding: '0.25rem 0.5rem', 
                     borderRadius: '0.25rem', 
                     fontFamily: 'monospace' 
-                  }}>source.txt</code> file with valid JSON containing movie metadata. This file tells FLIX 
+                  }}>info.json</code> file with valid JSON containing movie metadata. This file tells FLIX 
                   about your movie's details like title, description, genre, and more.
                 </p>
                 
@@ -168,7 +168,7 @@ const CustomPathInfo: React.FC = () => {
                   fontWeight: '600', 
                   marginBottom: '1rem' 
                 }}>
-                  Example source.txt Content:
+                  Example info.json Content:
                 </h3>
                 <div style={{
                   backgroundColor: '#2a2a2a',
@@ -312,7 +312,7 @@ const CustomPathInfo: React.FC = () => {
                     borderRadius: '0.375rem',
                     borderLeft: '4px solid #3b82f6'
                   }}>
-                    <strong style={{ color: '#60a5fa' }}>Step 4:</strong> Create a source.txt file with the movie's JSON metadata
+                    <strong style={{ color: '#60a5fa' }}>Step 4:</strong> Create an info.json file with the movie's JSON metadata
                   </div>
                   
                   <div style={{ 
@@ -349,8 +349,8 @@ const CustomPathInfo: React.FC = () => {
                     <strong style={{ color: '#ef4444' }}>Error: "Failed to scan custom path"</strong>
                     <p style={{ margin: '0.5rem 0 0 0' }}>
                       • Ensure the FLIX server has read permissions for the directory<br/>
-                      • Check that movie folders contain both video files and source.txt<br/>
-                      • Verify that source.txt files contain valid JSON (no syntax errors)
+                      • Check that movie folders contain both video files and info.json<br/>
+                      • Verify that info.json files contain valid JSON (no syntax errors)
                     </p>
                   </div>
                   
@@ -359,14 +359,14 @@ const CustomPathInfo: React.FC = () => {
                     <p style={{ margin: '0.5rem 0 0 0' }}>
                       • Check that each movie is in its own subfolder<br/>
                       • Ensure video files have supported extensions (.mp4, .mkv, .avi, .mov, .wmv)<br/>
-                      • Verify source.txt files are named exactly "source.txt" (case-sensitive on some systems)
+                      • Verify info.json files are named exactly "info.json" (case-sensitive on some systems)
                     </p>
                   </div>
                   
                   <div style={{ backgroundColor: '#2a2a2a', padding: '1rem', borderRadius: '0.375rem' }}>
                     <strong style={{ color: '#ef4444' }}>JSON parsing errors</strong>
                     <p style={{ margin: '0.5rem 0 0 0' }}>
-                      • Use a JSON validator to check your source.txt files<br/>
+                      • Use a JSON validator to check your info.json files<br/>
                       • Ensure all quotes are properly escaped<br/>
                       • Make sure arrays use square brackets [ ] and objects use curly braces { }<br/>
                       • Don't forget commas between fields (but not after the last field)
@@ -389,7 +389,7 @@ const CustomPathInfo: React.FC = () => {
                 </p>
                 <ul style={{ listStyle: 'disc', marginLeft: '1.5rem', marginBottom: '1rem' }}>
                   <li>Check the server console logs for detailed error messages</li>
-                  <li>Use online JSON validators to verify your source.txt files</li>
+                  <li>Use online JSON validators to verify your info.json files</li>
                   <li>Start with a small test folder containing just one movie</li>
                   <li>Make sure your path doesn't contain special characters or spaces that might cause issues</li>
                 </ul>
@@ -401,7 +401,7 @@ const CustomPathInfo: React.FC = () => {
                   marginTop: '2rem',
                   borderLeft: '4px solid #10b981'
                 }}>
-                  <strong style={{ color: '#10b981' }}>Pro Tip:</strong> Start with a simple setup using just the "title" field in your source.txt files, 
+                  <strong style={{ color: '#10b981' }}>Pro Tip:</strong> Start with a simple setup using just the "title" field in your info.json files, 
                   then gradually add more metadata as you become comfortable with the format.
                 </div>
               </section>
