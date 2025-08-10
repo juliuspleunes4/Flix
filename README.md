@@ -1,73 +1,71 @@
 # 🎬 Flix
 
-**Flix** is een zelfgehoste, minimalistische webapp voor het kijken van films uit je eigen collectie — veilig, snel, en zonder afhankelijkheid van commerciële platforms. Gebouwd voor persoonlijk gebruik door Julius (frontend) en Michiel (hardware/backend), met als doel om films op elk apparaat te kunnen streamen vanuit je eigen opslag.
+**Flix** is a self-hosted, minimalist web app for watching movies from your own collection — secure, fast, and without reliance on commercial platforms. Built for personal use by Julius (frontend + backend) and Michiel (hardware/backend), with the goal of streaming movies from your own storage to any device.
 
 ---
 
-## 🧠 Over het project
+## 🧠 About the project
 
-We vonden het omslachtig om films handmatig over te zetten of losse mediaspelers te gebruiken. Daarom hebben we **Flix** gemaakt: een web-based alternatief voor Netflix dat draait op onze eigen hardware. Toegang is alleen mogelijk via een gedeeld wachtwoord, zodat alleen wijzelf en eventueel familie/vrienden gebruik kunnen maken van het platform.
+We found it cumbersome to manually transfer movies or use separate media players. That's why we created **Flix**: a web-based alternative to Netflix that runs on our own hardware. Access is only possible via a shared password, so only we and possibly family/friends can use the platform.
 
 ---
 
 ## 🧱 Tech Stack
-
 ### Frontend + Backend (Julius)
-- **React** met **Vite** voor snelle performance
-- **TailwindCSS** voor moderne styling
-- **React Router** voor paginanavigatie
-- **Video.js** voor een mooie, responsieve video player
-- **Cookie-based auth** voor sessiebeheer
-- **Node.js** met **Express**
-- Auth-verificatie op login
-- Streaming via HTTP (optioneel uitbreidbaar met HLS/FFmpeg)
+- **React** with **Vite** for fast performance
+- **TailwindCSS** for modern styling
+- **React Router** for page navigation
+- **Video.js** for a sleek, responsive video player
+- **Cookie-based auth** for session management
+- **Node.js** with **Express**
+- Auth verification on login
+- Streaming via HTTP (optionally extendable with HLS/FFmpeg)
 
 ### Hardware (Michiel)
-- Statische file serving vanuit lokale HDD (MP4-bestanden)
-- NAS opzetten
+- Static file serving from local HDD (MP4 files)
+- NAS setup
 
-### Overig
-- Alle video’s worden lokaal gehost vanaf Michiel's machine/NAS
-- Geen gebruik van externe API’s of cloudopslag
-- Metadata kan handmatig worden toegevoegd indien gewenst
-
----
-
-## 🔐 Beveiliging
-
-Toegang tot Flix is afgeschermd via een gedeeld wachtwoord. Na succesvolle login wordt er een cookie geplaatst waarmee de gebruiker toegang krijgt tot de hoofdpagina en de films.
-
-### Werking:
-1. Bezoeker komt op `/login`
-2. Voert correct wachtwoord in (geconfigureerd in `.env`)
-3. Cookie wordt geplaatst met sessie-informatie
-4. Bij elke route wordt toegang gecontroleerd
-5. Fout wachtwoord = redirect naar loginpagina
+### Other
+- All videos are hosted locally from Michiel's machine/NAS
+- No use of external APIs or cloud storage
+- Metadata can be added manually if desired
 
 ---
 
-## 🧭 Navigatie-overzicht
+## 🔐 Security
 
-| Pagina                | Beschrijving                                          |
-|-----------------------|-------------------------------------------------------|
-| `/login`              | Invoeren van gedeeld wachtwoord                       |
-| `/home`               | Overzicht van alle beschikbare films                  |
-| `/movies`             | Uitgebreide filmbibliotheek met zoekfunctie           |
-| `/watch/:id`          | Videospeler voor het afspelen van geselecteerde film  |
-| `/custom-path-info`   | Informatiepagina over Custom Path functionaliteit     |
-| `/404`                | Fallbackpagina voor ongeldige routes                  |
+Access to Flix is protected via a shared password. After successful login, a cookie is placed that gives the user access to the main page and movies.
+
+### How it works:
+1. Visitor comes to `/login`
+2. Enters correct password (configured in `.env`)
+3. Cookie is placed with session information
+4. Access is checked on every route
+5. Wrong password = redirect to login page
 
 ---
 
-## 📁 Mapstructuur
+## 🧭 Navigation Overview
+
+| Page                  | Description                                            |
+|-----------------------|------------------------------------------------------- |
+| `/login`              | Enter shared password                                  |
+| `/home`               | Overview of all available movies                       |
+| `/movies`             | Extended movie library with search functionality       |
+| `/watch/:id`          | Video player for playing selected movie                |
+| `/custom-path-info`   | Information page about Custom Path functionality       |
+| `/404`                | Fallback page for invalid routes                       |
+
+---
+
+## 📁 File Structure
 
 ```
 flix/
 ├── backend/
 │   ├── server.js
 │   ├── package.json
-│   ├── .env.example
-│   ├── .env
+│   ├── movies.config.js
 │   └── public/
 │       └── movies/
 │           └── README.md
@@ -121,45 +119,46 @@ flix/
 │   ├── tsconfig.json
 │   ├── tsconfig.node.json
 │   └── vite.config.ts
+├── docs/
+│   ├── CHANGELOG.md
+│   ├── CUSTOM_PATH_FEATURE.md
+│   ├── GETTING_STARTED.md
+│   ├── GOOGLE_DRIVE_SETUP.md
+│   ├── TESTING_GUIDE.md
+│   ├── TODO.txt
+│   └── example_source.txt
 ├── .gitignore
-├── CHANGELOG.md
-├── CUSTOM_PATH_FEATURE.md
-├── example_source.txt
-├── GETTING_STARTED.md
-├── GOOGLE_DRIVE_SETUP.md
 ├── LICENSE.md
 ├── package.json
-├── README.md
-├── TESTING_GUIDE.md
-└── TODO.txt
+└── README.md
 ```
 
 ---
 
-## ⚙️ Installatie (ontwikkelomgeving)
+## ⚙️ Installation (development environment)
 
-### 🔹 Backend installeren
+### 🔹 Backend Setup
 
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# Voeg je gedeeld wachtwoord toe aan .env
+# Add your shared password to .env
 npm start
 ```
 
-### 🔹 Frontend installeren
+### 🔹 Frontend Setup
 
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Zorg dat frontend verzoeken stuurt naar het juiste IP-adres van Michiel’s backend. Dit kan lokaal zijn (http://localhost:3000) of via zijn externe IP/netwerknaam.
+Make sure the frontend sends requests to the correct IP address of Michiel’s backend. This can be either local (http://localhost:3000) or via his external IP/network name.
 
 ## 🧪 Testsetup
 
-1. Zet een paar films in `backend/public/movies/`:
+1. Place a few movies in `backend/public/movies/`:
 
 ```
 movies/
@@ -170,35 +169,35 @@ movies/
 
 2. Start backend
 3. Start frontend
-4. Navigeer naar `/login`, voer wachtwoord in
-5. Geniet van je eigen Netflix 🥳
+4. Navigate to `/login`, enter password
+5. Enjoy your own Netflix 🥳
 
-### 🛠️ Custom Path Functionaliteit
+### 🛠️ Custom Path Functionality
 
-Flix ondersteunt nu een **Custom Path** feature waarmee je eigen filmcollecties kunt scannen en toevoegen aan de bibliotheek. Deze functionaliteit is perfect voor het organiseren van persoonlijke videocollecties.
+Flix now supports a **Custom Path** feature that allows you to scan and add your own movie collections to the library. This functionality is perfect for organizing personal video collections.
 
-### ✨ Belangrijkste features:
-- **Automatische detectie** van videobestanden in aangegeven mappen
-- **Ondersteuning voor meerdere formaten**: MP4, MKV, AVI, MOV, WMV
-- **Metadata uit JSON**: Elke film moet een `source.txt` bestand bevatten met filminformatie
-- **Persistent opslag**: Gescande paden worden lokaal opgeslagen voor toekomstige sessies
-- **Responsieve interface**: Werkt op zowel desktop als mobiele apparaten
+### ✨ Key features:
+- **Automatic detection** of video files in specified directories
+- **Support for multiple formats**: MP4, MKV, AVI, MOV, WMV
+- **Metadata from JSON**: Each movie must contain a `source.txt` file with movie information
+- **Persistent storage**: Scanned paths are stored locally for future sessions
+- **Responsive interface**: Works on both desktop and mobile devices
 
-### 📁 Vereiste mapstructuur:
+### 📁 Required directory structure:
 ```
-Je Custom Pad/
-├── Film 1/
+Your Custom Path/
+├── Movie 1/
 │   ├── movie.mp4
 │   └── source.txt
-├── Film 2/
+├── Movie 2/
 │   ├── movie.mkv
 │   └── source.txt
-└── Film 3/
+└── Movie 3/
     ├── movie.avi
     └── source.txt
 ```
 
-### 📝 Voorbeeld source.txt:
+### 📝 Example source.txt:
 ```json
 {
   "title": "The Matrix",
@@ -212,23 +211,23 @@ Je Custom Pad/
 }
 ```
 
-### 🔗 Toegang tot informatie:
-Uitgebreide documentatie over het instellen en gebruiken van Custom Path is beschikbaar via de **informatiepagina** (`/custom-path-info`) die toegankelijk is via de "?" knop in het Custom Path modal.<br>
+### 🔗 Access to information:
+Comprehensive documentation about setting up and using Custom Path is available via the **information page** (`/custom-path-info`) accessible through the "?" button in the Custom Path modal.<br>
 
 
-## 💡 Mogelijke uitbreidingen
+## 💡 Possible Extensions
 
-- ✅ Favorieten opslaan
-- 🧑‍🤝‍🧑 Gebruikersbeheer
-- 📱 Responsieve mobiele weergave
-- 💬 Recensies/reacties per film
-- 🎞️ Subtitles en meerdere audiotracks
-- 📈 Serverstatus-dashboard voor Michiel
+- ✅ Save favorites
+- 🧑‍🤝‍🧑 User management
+- 📱 Responsive mobile view
+- 💬 Reviews/comments per movie
+- 🎞️ Subtitles and multiple audio tracks
+- 📈 Server status dashboard for Michiel
 
-## 👥 Auteurs
+## 👥 Authors
 
-- **Julius** – Frontend, UI/UX, authenticatie, routing, Backend, streaming, hosting
-- **Michiel** – media-opslag, NAS
+- **Julius** – Frontend, UI/UX, authentication, routing, Backend, streaming, hosting
+- **Michiel** – Media storage, NAS
 
-📜 Licentie
-- 🔒 Dit project is uitsluitend bedoeld voor privégebruik. Distributie van auteursrechtelijk beschermd materiaal buiten je huishouden is in strijd met de wetgeving.
+📜 License
+- 🔒 This project is intended for private use only. Distribution of copyrighted material outside your household is against the law.
