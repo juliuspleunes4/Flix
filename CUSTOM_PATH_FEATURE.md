@@ -1,15 +1,15 @@
 # Custom Path Feature - FLIX
 
-Deze feature stelt je in staat om films uit een custom folder te laden in FLIX.
+This feature allows you to load movies from a custom folder into FLIX.
 
-## Hoe werkt het?
+## How does it work?
 
-1. **Folder Structuur**: Elke film moet in een eigen subfolder zitten
-2. **Vereiste Bestanden**: 
-   - Een video bestand (.mp4, .mkv, .avi, .mov, .wmv)
-   - Een `source.txt` bestand met film metadata
+1. **Folder Structure**: Each movie must be in its own subfolder
+2. **Required Files**: 
+   - A video file (.mp4, .mkv, .avi, .mov, .wmv)
+   - A `source.txt` file with movie metadata
 
-## Voorbeeld Folder Structuur
+## Example Folder Structure
 
 ```
 C:\CustomMovies\
@@ -26,12 +26,12 @@ C:\CustomMovies\
 
 ## source.txt Format
 
-Het `source.txt` bestand moet een JSON object bevatten met de volgende informatie:
+The `source.txt` file must contain a JSON object with the following information:
 
 ```json
 {
-  "title": "Film Titel",
-  "description": "Beschrijving van de film",
+  "title": "Movie Title",
+  "description": "Description of the movie",
   "year": 2023,
   "genre": ["Drama", "Action"],
   "duration": "120 min",
@@ -42,35 +42,35 @@ Het `source.txt` bestand moet een JSON object bevatten met de volgende informati
 }
 ```
 
-### Vereiste Velden
-- `title`: De titel van de film
+### Required Fields
+- `title`: The title of the movie
 
-### Optionele Velden
-- `description`: Beschrijving van de film
-- `year`: Uitkomstjaar
-- `genre`: Array van genres
-- `duration`: Duur van de film
-- `rating`: Film rating (PG, PG-13, R, etc.)
-- `quality`: Video kwaliteit (1080p, 720p, etc.)
-- `stars`: Sterren rating (0-5)
-- `thumbnail`: URL naar een poster afbeelding
+### Optional Fields
+- `description`: Description of the movie
+- `year`: Release year
+- `genre`: Array of genres
+- `duration`: Duration of the movie
+- `rating`: Movie rating (PG, PG-13, R, etc.)
+- `quality`: Video quality (1080p, 720p, etc.)
+- `stars`: Star rating (0-5)
+- `thumbnail`: URL to a poster image
 
-## Hoe te gebruiken
+## How to use
 
-1. Klik op de "Custom Path" knop naast "Sign Out" in de navbar
-2. Voer het pad in naar je custom movies folder
-3. Klik op "Scan" om de folder te scannen
-4. Films met een geldig `source.txt` bestand worden toegevoegd aan je library
+1. Click the "Custom Path" button next to "Sign Out" in the navbar
+2. Enter the path to your custom movies folder
+3. Click "Scan" to scan the folder
+4. Movies with a valid `source.txt` file will be added to your library
 
-## Belangrijk
+## Important
 
-- **Alleen films met een `source.txt` bestand worden getoond**
-- De `source.txt` moet geldige JSON bevatten
-- Films worden tijdelijk geladen (verdwijnen bij server restart)
-- Gebruik "Clear" om alle custom films te verwijderen
+- **Only movies with a `source.txt` file will be shown**
+- The `source.txt` must contain valid JSON
+- Movies are loaded temporarily (will disappear on server restart)
+- Use "Clear" to remove all custom movies
 
 ## Troubleshooting
 
-- **Geen films gevonden**: Controleer of elke film folder een `source.txt` bestand heeft
-- **JSON Error**: Controleer of de `source.txt` geldige JSON bevat
-- **Pad niet gevonden**: Controleer of het ingevoerde pad correct is en toegankelijk
+- **No movies found**: Check if each movie folder has a `source.txt` file
+- **JSON Error**: Check if the `source.txt` contains valid JSON
+- **Path not found**: Check if the entered path is correct and accessible
