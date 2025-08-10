@@ -1,3 +1,15 @@
+/* 
+███████╗██╗     ██╗██╗  ██╗
+██╔════╝██║     ██║╚██╗██╔╝
+█████╗  ██║     ██║ ╚███╔╝ 
+██╔══╝  ██║     ██║ ██╔██╗ 
+██║     ███████╗██║██╔╝ ██╗
+╚═╝     ╚══════╝╚═╝╚═╝  ╚═╝    
+
+“Piracy is not a people problem, it’s a service problem.” – Gabe Newell, co-founder of Valve
+*/
+
+
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
